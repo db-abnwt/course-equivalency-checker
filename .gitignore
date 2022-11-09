@@ -3,3 +3,4 @@
 *.synctex.gz
 *.fls
 *.log
+.DS_Store

@@ -1,0 +1,22 @@
+\ProvidesPackage{nwstyle}
+
+% fonts
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+
+% margins and page no.
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{nopageno}
+
+% headers
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{\footnotesize \parbox{11cm}{Project Proposal} }
+\rhead{\footnotesize CS225: Database Foundations}
+\rfoot{\footnotesize Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\footrulewidth}{0.4pt}
+
