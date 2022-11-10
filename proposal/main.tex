@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{nwstyle}
 
@@ -9,5 +9,73 @@
 \begin{document}
 \maketitle
 
-This is the project proposal for class ICCS225: Database Foundations.
+\section*{Introduction}
+Currently, the MUIC International Affairs unit which deals with
+exchange programs has a \href{https://sites.google.com/mahidol.edu/icabroad/home}
+{website} that contains the information for any MUIC student
+interested in doing an exchange program. It also has a link
+to another \href{https://datastudio.google.com/u/0/reporting/99a044ff-1412-494e-a8b4-eb8a821bbc53/page/X3alC}
+{website} that contains the information about course equivalency
+between MUIC courses and partner universities' courses.
+However, these websites are separated and both lack certain
+good-to-have features. Thus, we would like to propose for a
+rework of the IC Abroad website that contains information
+about partner universities, course equivalency, 
+
+\section*{Problem Definition}
+This problem is in the education domain since
+it concerns MUIC students who wants to go on exchange. However,
+the current \href{https://sites.google.com/mahidol.edu/icabroad/home}
+{website} contains the following pain points:
+
+\begin{itemize}
+    \item The available exchange slots on the
+        \href{https://sites.google.com/mahidol.edu/icabroad/application-for-exchange-program}
+        {Application for exchange program page} show every single
+        partner university, which is too much and has no obvious
+        way to search by country or your target university unless
+        `Find in page' was used.
+    \item The list of partner universities is very difficult to 
+        navigate and search for a specific university
+    \item The partner university page doesn't show the approved
+        equivalent courses anymore, and just gives a link to the 
+        Google Data Studio \href{https://datastudio.google.com/u/0/reporting/99a044ff-1412-494e-a8b4-eb8a821bbc53/page/X3alC}
+        {website} for course equivelency, which is annoying since
+        they are separate websites.
+    \item The full course equivalency \href{https://datastudio.google.com/u/0/reporting/99a044ff-1412-494e-a8b4-eb8a821bbc53/page/X3alC}
+        {website} cannot be searched by major without doing some
+        intense ticking.
+\end{itemize}
+
+\section*{Features and Functionalities}
+Following are the features we plan to have in our proposed website:
+\begin{itemize}
+    \item It will have the same pages as the original IC Abroad 
+        website but with different designs and slightly different 
+        navigation layout.
+    \item Available exchange slots and list of partner university
+        will be optimized and searchable.
+    \item Partner university page will contain the approved 
+        equivalent courses
+    \item The course equivalency records will be searchable by
+        major and will be part of the same website.
+\end{itemize}
+
+\section*{Stakeholders}
+\begin{itemize}
+    \item The International Affairs unit would be the one to
+        manage the website once deployed, so they would be the
+        administrative user.
+    \item The students at MUIC would be the ones using the website
+        in a mostly read-only mode where they can get information
+        for their exchange program.
+\end{itemize}
+
+\section*{Responsibilities}
+Both members will come up with the database schema together.
+Nawat will come up with the basic design and layout template
+of each page but each page will be worked on separately by
+each member $-$ implementing both the HTML template and the
+code that backs it up.
+
 \end{document}
