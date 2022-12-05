@@ -10,3 +10,14 @@ poetry run python icabroad/app.sh
 ```
 
 The web server should then be running.
+
+## Config file example
+
+Make sure to change it to the correct ones
+
+```yaml
+mysql_host: 'localhost'
+mysql_user: 'lovedbsomuch'
+mysql_password: 'hardpass'
+mysql_db: 'icabroad'
+```
