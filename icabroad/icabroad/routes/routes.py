@@ -4,7 +4,7 @@ from .routeutils import NavbarLink
 
 
 @app.route("/", methods=["GET"])
-def index():
+def home():
     links = [
         NavbarLink("Partner Universities", "/partners"),
         NavbarLink("Buddy Program", "/partners"),
@@ -17,5 +17,5 @@ def index():
 
 
 @app.route("/ajkanat", methods=["GET"])
-def kanat():
+def ajkanat():
     return render_template("kanat.html")

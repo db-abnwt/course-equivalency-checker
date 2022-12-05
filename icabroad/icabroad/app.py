@@ -4,6 +4,7 @@ import yaml
 
 config = yaml.load(open("config.yaml", "r"), yaml.Loader)
 
+
 def create_app():
     flask = Flask(__name__, instance_relative_config=True)
 
