@@ -16,6 +16,6 @@ def index():
     return render_template("base.html", links=links)
 
 
-@app.route("/kanat", methods=["GET"])
+@app.route("/ajkanat", methods=["GET"])
 def kanat():
     return render_template("kanat.html")
