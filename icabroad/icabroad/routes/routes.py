@@ -1,21 +1,34 @@
-from flask import render_template
+from flask import render_template, redirect
 from flask import current_app as app
+from flaskext.mysql import MySQL
 from .routeutils import NavbarLink
+
+mysql = MySQL()
+
+links = [
+    NavbarLink("Partner Universities", "/partners"),
+    NavbarLink("Buddy Program", "/buddy"),
+    NavbarLink("Apply", "/apply"),
+    NavbarLink("Scholarships", "/scholarships"),
+    NavbarLink("Course Equivalency", "/course-equiv"),
+    NavbarLink("FAQ", "/faq"),
+]
 
 
 @app.route("/", methods=["GET"])
+def root():
+    return redirect("/home")
+
+
+@app.route("/home", methods=["GET"])
 def home():
-    links = [
-        NavbarLink("Partner Universities", "/partners"),
-        NavbarLink("Buddy Program", "/partners"),
-        NavbarLink("Apply", "/apply"),
-        NavbarLink("Scholarships", "/scholarships"),
-        NavbarLink("Course Equivalency", "/course-equiv"),
-        NavbarLink("FAQ", "/faq"),
-    ]
-    return render_template("base.html", links=links)
+    with mysql.connect().cursor() as cur:
+        query = "select distinct continent from country "
+        cur.execute(query)
+        continents = cur.fetchall()
+    return render_template("home.html", links=links, continents=continents)
 
 
-@app.route("/ajkanat", methods=["GET"])
-def ajkanat():
+@app.route("/aj-kanat", methods=["GET"])
+def aj_kanat():
     return render_template("kanat.html")
