@@ -11,6 +11,7 @@
 <div class="container-fluid">
     <h1>Partner Universities in {{ fcn }}</h1>
     {% for k, v in partners.items() %}
+    {% if v | length %}
     <div class="container-fluid">
         <div class="row">
             <div class="col">
@@ -27,6 +28,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}
