@@ -43,12 +43,12 @@ def login():
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
-        loginDetails = request.form
-        id = loginDetails['username']
-        password = loginDetails['password']
+        login_details = request.form
+        username = login_details['username']
+        password = login_details['password']
         with mysql.connect().cursor() as cur:
             try:
-                query = f"select stu_id,password from users where stu_id = {id}"
+                query = f"select stu_id,password from users where stu_id = {username}"
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
@@ -68,9 +68,9 @@ def register():
         register_details = request.form
         username = int(register_details['username'])
         password = register_details['password']
-        cpassword = register_details['confirm_password']
+        c_password = register_details['confirm_password']
 
-        if password != cpassword:
+        if password != c_password:
             return render_template('register.html', error='Password is different')
 
         hashed_pw = generate_password_hash(password)
