@@ -1,7 +1,7 @@
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request
 from flask import current_app as app
 from flaskext.mysql import MySQL
-from .routeutils import NavbarLink
+from routeutils import NavbarLink
 from werkzeug.security import generate_password_hash, check_password_hash
 
 mysql = MySQL(app)
@@ -48,7 +48,8 @@ def login():
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
-                    return render_template("login.html", error="Success")
+                    return render_template("login.html", error="Success")\
+                        , {"Refresh": "3; url=/"}
                 return render_template("login.html", error="Wrong password")
             except:
                 return render_template("login.html", error = "Student_ID doesn't not exist [1]")
@@ -79,7 +80,7 @@ def register():
                 cur.execute(query)
                 cur.connection.commit()
                 return render_template('register.html', error='Register Succesful, Redirecting to Login Page')\
-                , {"Refresh": "3; url=/login"}
+                    , {"Refresh": "3; url=/login"}
             except:
                 return render_template('register.html', error='Kaboom')
     return render_template('register.html')
