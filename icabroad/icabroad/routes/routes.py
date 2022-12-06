@@ -3,7 +3,7 @@ from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .routeutils import get_all_continents
+from .routeutils import get_all_continents, get_partners_from_continent
 
 mysql = MySQL(app)
 
@@ -16,11 +16,6 @@ def root():
 @app.route("/home", methods=["GET"])
 def home():
     return render_template("home.html", continents=get_all_continents())
-
-
-@app.route("/continent", methods=["GET"])
-def continent():
-    return render_template("continent.html", continents=get_all_continents())
 
 
 @app.route("/aj-kanat", methods=["GET"])
@@ -79,3 +74,14 @@ def register():
             except:
                 return render_template('register.html', error='Kaboom')
     return render_template('register.html')
+
+
+@app.route("/continent", methods=["GET"])
+def continents():
+    return render_template("continents.html", continents=get_all_continents())
+
+
+@app.route("/continent/<continent_name>", methods=["GET"])
+def continent(continent_name: str):
+    full_cont_name, partners = get_partners_from_continent(continent_name)
+    return render_template("continent.html", fcn=full_cont_name, partners=partners)

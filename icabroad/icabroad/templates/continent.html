@@ -2,31 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} Continents with Partners {% endblock title %}</title>
+    <title>{% block title %}Partners in {{ fcn }}{% endblock title %}</title>
 </head>
 <body>
 {% extends "base.html" %}
+
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <h1>Select a region to begin your journey!</h1>
-            <ul>
-                {% for continent in continents %}
-                <li style="display:inline-block">
-                    <div class="container">
-                        <a href="/continent/{{ continent.simple }}">
-                            <img src="../static/assets/continents/{{ continent.simple }}.jpg"
-                                 alt="continent-pic"
-                                 width="200px"/>
-                            <p style="text-align: center">{{ continent.normal }}</p>
-                        </a>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+    <h1>Partner Universities in {{ fcn }}</h1>
+    {% for p in partners %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h2>{{ p.uni_name }} ({{ p.country }})</h2>
+                <h3>Quick Look at the Partner University</h3>
+                <ul>
+                    <li>Required GPA: {{ p.required_gpa }}</li>
+                    <li>Minimum estimated cost: {{ p.c_min }}</li>
+                    <li>Maximum estimated cost: {{ p.c_max }}</li>
+                    <li>Housing type: {{ p.housing }}</li>
+                    <li><a href="{{ p.map }}">Link</a> to university map</li>
+                    <li><a href="{{ p.incoming_student }}">Link</a> for incoming students</li>
+                    <li><a href="{{ p.courses }}">Link</a> to open courses</li>
+                </ul>
+            </div>
         </div>
     </div>
+    {% endfor %}
 </div>
 {% endblock %}
 </body>
