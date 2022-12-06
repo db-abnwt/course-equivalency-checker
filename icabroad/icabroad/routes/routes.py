@@ -1,7 +1,7 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, url_for
 from flask import current_app as app
 from flaskext.mysql import MySQL
-from routeutils import NavbarLink
+from .routeutils import NavbarLink
 from werkzeug.security import generate_password_hash, check_password_hash
 
 mysql = MySQL(app)
