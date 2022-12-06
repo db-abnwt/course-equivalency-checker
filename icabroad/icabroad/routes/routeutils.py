@@ -14,21 +14,13 @@ class ContinentLink:
         return ContinentLink(continent_tup)
 
 
-class PartnerUniversity:
+class PartnerLink:
     def __init__(self, partner: tuple):
-        self.uni_name = partner[0]
-        self.country = partner[1]
-        self.required_gpa = partner[2]
-        self.housing = partner[3]
-        self.c_min = partner[4]
-        self.c_max = partner[5]
-        self.map = partner[6]
-        self.incoming_student = partner[7]
-        self.courses = partner[8]
+        self.uni_id, self.uni_name = partner
 
     @staticmethod
-    def generate_partner(partner_tup: tuple):
-        return PartnerUniversity(partner_tup)
+    def generate_partner_link(partner_tup: tuple):
+        return PartnerLink(partner_tup)
 
 
 def get_all_continents() -> list[ContinentLink]:
@@ -38,20 +30,21 @@ def get_all_continents() -> list[ContinentLink]:
         return list(map(ContinentLink.generate_continent, cur.fetchall()))
 
 
-def get_partners_from_continent(continent_name: str):
+def get_partners_from_continent(continent_name: str) -> tuple[str, dict[list[PartnerLink]]]:
     with mysql.connect().cursor() as cur:
-        query1 = "select uni_name, c.name as name, required_gpa, housing_type, est_cost_min, " \
-                 "est_cost_max, map_link, incoming_stu_link, course_open_link " \
-                 "from partner_university as p " \
-                 "join country as c on p.country_id = c.country_id " \
-                 f"where lower(replace(c.continent, ' ', '')) = '{continent_name}';"
-        cur.execute(query1)
-        partners = list(map(PartnerUniversity.generate_partner, cur.fetchall()))
+        all_countries_query = f"select country_id, name, continent " \
+                              f"from country " \
+                              f"where lower(replace(continent, ' ', '')) = '{continent_name}'"
+        cur.execute(all_countries_query)
+        all_countries = cur.fetchall()
 
-        query2 = "select continent " \
-                 "from country " \
-                 f"where lower(replace(continent, ' ', '')) = '{continent_name}';"
-        cur.execute(query2)
-        full_continent_name = cur.fetchone()[0]
+        country2partners = {}
+        for cid, country, _ in all_countries:
+            partners_in_country_query = f"select uni_id, uni_name " \
+                                        f"from partner_university " \
+                                        f"where country_id = {cid}"
+            cur.execute(partners_in_country_query)
+            partners_in_country = cur.fetchall()
+            country2partners[country] = list(map(PartnerLink.generate_partner_link, partners_in_country))
 
-        return full_continent_name, partners
+        return all_countries[0][2], country2partners

@@ -83,5 +83,5 @@ def continents():
 
 @app.route("/continent/<continent_name>", methods=["GET"])
 def continent(continent_name: str):
-    full_cont_name, partners = get_partners_from_continent(continent_name)
-    return render_template("continent.html", fcn=full_cont_name, partners=partners)
+    full_continent_name, partners = get_partners_from_continent(continent_name)
+    return render_template("continent.html", fcn=full_continent_name, partners=partners)

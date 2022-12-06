@@ -10,21 +10,20 @@
 {% block content %}
 <div class="container-fluid">
     <h1>Partner Universities in {{ fcn }}</h1>
-    {% for p in partners %}
+    {% for k, v in partners.items() %}
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <h2>{{ p.uni_name }} ({{ p.country }})</h2>
-                <h3>Quick Look at the Partner University</h3>
-                <ul>
-                    <li>Required GPA: {{ p.required_gpa }}</li>
-                    <li>Minimum estimated cost: {{ p.c_min }}</li>
-                    <li>Maximum estimated cost: {{ p.c_max }}</li>
-                    <li>Housing type: {{ p.housing }}</li>
-                    <li><a href="{{ p.map }}">Link</a> to university map</li>
-                    <li><a href="{{ p.incoming_student }}">Link</a> for incoming students</li>
-                    <li><a href="{{ p.courses }}">Link</a> to open courses</li>
-                </ul>
+                <div class="container-fluid">
+                    <h2>{{ k }}</h2>
+                    <ul>
+                        {% for p in v %}
+                        <li>
+                            <a href="/partner/{{ p.uni_id }}">{{ p.uni_name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
