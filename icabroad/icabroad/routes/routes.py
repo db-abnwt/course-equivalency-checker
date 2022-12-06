@@ -3,7 +3,7 @@ from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .routeutils import get_all_continents, get_partners_from_continent
+from .rutils import get_all_continents, get_partners_from_continent
 
 mysql = MySQL(app)
 
