@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Partners in {{ fcn }}{% endblock title %}</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Partner Universities in {{ fcn }}</h1>
+    {% for k, v in partners.items() %}
+    {% if v | length %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="container-fluid">
+                    <h2>{{ k }}</h2>
+                    <ul>
+                        {% for p in v %}
+                        <li>
+                            <a href="/partner/{{ p.uni_id }}">{{ p.uni_name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Continents with Partners {% endblock title %}</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>Select a region to begin your journey!</h1>
+            <ul>
+                {% for continent in continents %}
+                <li style="display:inline-block">
+                    <div class="container">
+                        <a href="/continent/{{ continent.simple }}">
+                            <img src="../static/assets/continents/{{ continent.simple }}.jpg"
+                                 alt="continent-pic"
+                                 width="200px"/>
+                            <p style="text-align: center">{{ continent.normal }}</p>
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>
