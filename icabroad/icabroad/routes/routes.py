@@ -26,7 +26,7 @@ def aj_kanat():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'GET':
-        return render_template("login.html")
+        return render_template("auth/login.html")
     elif request.method == 'POST':
         login_details = request.form
         username = login_details['username']
@@ -37,18 +37,18 @@ def login():
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
-                    return render_template("login.html", error="Success") \
+                    return render_template("auth/login.html", error="Success") \
                         , {"Refresh": "3; url=/"}
-                return render_template("login.html", error="Wrong password")
+                return render_template("auth/login.html", error="Wrong password")
             except:
-                return render_template("login.html", error="Student_ID doesn't not exist [1]")
-    return render_template("login.html")
+                return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
+    return render_template("auth/login.html")
 
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('auth/register.html')
     if request.method == 'POST':
         register_details = request.form
         username = int(register_details['username'])
@@ -56,7 +56,7 @@ def register():
         c_password = register_details['confirm_password']
 
         if password != c_password:
-            return render_template('register.html', error='Password is different')
+            return render_template('auth/register.html', error='Password is different')
 
         hashed_pw = generate_password_hash(password)
 
@@ -69,19 +69,20 @@ def register():
                 )
                 cur.execute(query)
                 cur.connection.commit()
-                return render_template('register.html', error='Register Succesful, Redirecting to Login Page') \
+                return render_template('auth/register.html', error='Register Succesful, Redirecting to Login Page') \
                     , {"Refresh": "3; url=/login"}
             except:
-                return render_template('register.html', error='Kaboom')
-    return render_template('register.html')
+                return render_template('auth/register.html', error='Kaboom')
+    return render_template('auth/register.html')
 
 
 @app.route("/continent", methods=["GET"])
 def continents():
-    return render_template("continents.html", continents=get_all_continents())
+    all_continents = get_all_continents()
+    return render_template("partners/continents.html", continents=all_continents)
 
 
 @app.route("/continent/<continent_name>", methods=["GET"])
 def continent(continent_name: str):
     full_continent_name, partners = get_partners_from_continent(continent_name)
-    return render_template("continent.html", fcn=full_continent_name, partners=partners)
+    return render_template("partners/continent.html", fcn=full_continent_name, partners=partners)
