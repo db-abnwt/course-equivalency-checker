@@ -1,5 +1,4 @@
 from flask import Flask
-from flaskext.mysql import MySQL
 import yaml
 
 config = yaml.load(open("config.yaml", "r"), yaml.Loader)
@@ -16,8 +15,8 @@ def create_app():
         flask.config["MYSQL_DATABASE_PASSWORD"] = config["mysql_password"]
         flask.config["MYSQL_DATABASE_DB"] = config["mysql_db"]
 
-        mysql = MySQL()
-        mysql.init_app(flask)
+        init_mysql = routes.mysql
+        init_mysql.init_app(flask)
 
         return flask
 

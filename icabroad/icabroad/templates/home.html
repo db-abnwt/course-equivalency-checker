@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Home{% endblock title %}</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>Announcements</h1>
+            <h2>Upcoming Events:</h2>
+            <ul>
+                <li>January Intake 2023</li>
+            </ul>
+            <h2>New exchange destinations for January 2023</h2>
+            <ul>
+                <li>University of Seoul</li>
+                <li>Kyungpook National University</li>
+                <li>Eikei University of Hiroshima</li>
+                <li>Universidad Pontificia Comillas (ICADE Business School)</li>
+            </ul>
+            Recent Exchange Info session video was uploaded to
+            <span>
+            <a href="https://www.youtube.com/watch?v=TVxeZme8mOk&ab_channel=KittapornKitsawat">here</a>
+            </span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <h1>Welcome!</h1>
+            <p>
+                You will explore the list of partner universities available for your study abroad application and also
+                the courses that had been approved from the previous years. The course equivalency in this database is
+                based on the previous batches of MUIC outbound exchange students only. You should refer to the host
+                university website for the list of courses offered in the particular semester that you are intended to
+                study abroad. Please note that courses are subject to the host university’s availability in each
+                semester/year. The student exchange office will guide you through proceed your own courses/study plan
+                equivalency prior to your study dates at the host university.
+            </p>
+            <h2>Advantages of being an exchange student</h2>
+            <p>
+                An exchange student is who, by prior formal arrangement, undertakes short-term study (one term to one
+                academic year) at one of the MUIC’s partner universities (under a reciprocal basis). Students will pay
+                tuition fee at MUIC for their exchange abroad while tuition fee at the host university will be waived.
+                Credits earned during the semester abroad will be transferred to MUIC academic records (subject to the
+                result of course equivalency arrangement).
+            </p>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <h1>Select a region to begin your journey!</h1>
+            <ul>
+                {% for continent in continents %}
+                <li style="display:inline-block">
+                    <div class="container">
+                        <img src="../static/assets/continents/{{ continent[0].lower().replace(' ', '') }}.jpg"
+                             alt="continent-pic"
+                             width="200px"/>
+<!--                        <a>{{ continent[0] }}</a>-->
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+</body>
+</html>
