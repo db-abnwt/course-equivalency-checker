@@ -1,7 +1,7 @@
 from flask import render_template, redirect
 from flask import current_app as app
 from flaskext.mysql import MySQL
-from .routeutils import NavbarLink
+from .routeutils import NavbarLink, ContinentLink
 
 mysql = MySQL()
 
@@ -23,10 +23,12 @@ def root():
 @app.route("/home", methods=["GET"])
 def home():
     with mysql.connect().cursor() as cur:
-        query = "select distinct continent from country "
+        def generate_continent(continent: tuple[str]): return ContinentLink(continent)
+
+        query = "select distinct continent from country;"
         cur.execute(query)
-        continents = cur.fetchall()
-    return render_template("home.html", links=links, continents=continents)
+        continents = map(generate_continent, cur.fetchall())
+        return render_template("home.html", links=links, continents=continents)
 
 
 @app.route("/aj-kanat", methods=["GET"])
