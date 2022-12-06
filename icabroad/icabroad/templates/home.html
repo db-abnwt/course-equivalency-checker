@@ -60,10 +60,12 @@
                 {% for continent in continents %}
                 <li style="display:inline-block">
                     <div class="container">
-                        <img src="../static/assets/continents/{{ continent[0].lower().replace(' ', '') }}.jpg"
-                             alt="continent-pic"
-                             width="200px"/>
-<!--                        <a>{{ continent[0] }}</a>-->
+                        <a href="/continent/{{ continent.simple }}">
+                            <img src="../static/assets/continents/{{ continent.simple }}.jpg"
+                                 alt="continent-pic"
+                                 width="200px"/>
+                            <p style="text-align: center">{{ continent.normal }}</p>
+                        </a>
                     </div>
                 </li>
                 {% endfor %}
