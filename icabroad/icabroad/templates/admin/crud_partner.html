@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+    .list-group{
+        max-height: 300px;
+        margin-bottom: 10px;
+        overflow-y:scroll;
+        -webkit-overflow-scrolling: touch;
+    }
     </style>
+    <script>
+        const arr = [];
+    </script>
 </head>
 <body>
     <main>
@@ -17,24 +26,24 @@
           </div>
             <div class="input-group">
                 <span class="input-group-text">Country</span>
-                <select class="form-select" name="country">
+                <select class="form-select form_input" name="country" id="country">
                     <option selected>Open this select menu</option>
                     {% for i in countries %}
-                    <option value={{loop.index}}>{{ i[1] }}</option>
+                    <option value={{i[0]}}>{{ i[1] }}</option>
                     {% endfor %}
                 </select>
                 <span class="input-group-text">Required Gpa</span>
-                <input type="text" name="gpa" class="form-control">
+                <input type="text" name="gpa" id="gpa" class="form-control">
                 <span class="input-group-text">Housing Type</span>
-                <select class="form-select" name="housing">
+                <select class="form-select" id="housing" name="housing">
                     <option selected>Select Housing Type</option>
                     <option value=0>On-campus</option>
                     <option value=1>Off-campus</option>
                 </select>
                 <span class="input-group-text">Cost-min</span>
-                <input type="text" name="costMin" class="form-control">
+                <input type="text" name="costMin" id="costMin" class="form-control">
                 <span class="input-group-text">Cost-max</span>
-                <input type="text" name="costMax" class="form-control">
+                <input type="text" name="costMax" id="costMax" class="form-control">
             </div>
             <div class="mb-3">
                 <label class="form-label">Map Link</label>
@@ -51,19 +60,39 @@
         </form>
 <br>
           <div>
-              <label for="exampleDataList" class="form-label">Search then click to edit</label>
-                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
+              <form action="/admin/partner{{uni}}" method="get">
+                  <label for="exampleDataList" class="form-label">Search then click to edit</label>
+                <input class="form-control" name="uni" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
                 <datalist id="datalistOptions">
-                  <option value="San Francisco">
-                  <option value="New York">
-                  <option value="Seattle">
-                  <option value="Los Angeles">
-                  <option value="Chicago">
+                    {% for uni in universities %}
+                    <option>{{ uni[1] }}</option>
+                    {% endfor %}
                 </datalist>
+
+                <button type="submit" class="btn btn-primary">Edit</button>
+
+              </form>
           </div>
       </div>
     </main>
-
-
+{% for i in fill %}
+<script>
+        arr.push('{{i}}')
+</script>
+{% endfor %}
+<script>
+    if (arr.length > 1) {
+        // console.log(arr)
+        InputName.setRangeText(arr[1]) //Name
+        country[arr[2]].selected = true // Country
+        gpa.setRangeText(arr[3]) //Gpa
+        if (arr[4] != 'None') {housing[arr[4]].selected = true} // Housing Type
+        costMin.setRangeText((arr[5] == 'None') ? "" : arr[5]) // Min Cost of living
+        costMax.setRangeText((arr[6] == 'None') ? "" : arr[6]) // Max cost of living
+        map.setRangeText((arr[7] == 'None') ? "" : arr[7]) // Map Link
+        incoming.setRangeText((arr[8] == 'None') ? "" : arr[8]) // Incoming student link
+    }
+</script>
 </body>
+
 </html>

@@ -101,8 +101,12 @@ def admin():
 @app.route("/admin/<zone>", methods=["GET", "POST"])
 def admin_zone(zone: str):
     countries = get_all_countries()
+    universities = get_all_universities()
     if request.method == 'GET':
-        return render_template("admin/admin.html", zone=zone, countries=countries)
+        args = request.args.get('uni')
+        if args:
+            partner_info = get_partners_from_name(args)
+            return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities, fill=partner_info[0])
+        return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities)
     elif request.method == 'POST':
-        print(request.form)
         return render_template("admin/admin.html", zone=zone, countries=countries)

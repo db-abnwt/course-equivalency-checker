@@ -1,3 +1,5 @@
+from typing import Tuple, Any, Dict
+
 from flaskext.mysql import MySQL
 from flask import current_app as app
 from .rmodels import ContinentLink, PartnerLink
@@ -41,3 +43,24 @@ def get_all_countries() -> list[tuple[int, str]]:
 
     # print(all_countries)
     return all_countries
+
+
+def get_all_universities() -> tuple[Any, dict[Any, Any]]:
+    with mysql.connect().cursor() as cur:
+        all_universities_query = f"select * " \
+                                 f"from partner_university "
+        cur.execute(all_universities_query)
+        all_universities = cur.fetchall()
+
+    return all_universities
+
+
+def get_partners_from_name(name: str) -> Any | None:
+    with mysql.connect().cursor() as cur:
+        find_uni_query = f"select * " \
+                         f"from partner_university " \
+                         f"where uni_name = '{name}';"
+        cur.execute(find_uni_query)
+        partner_info = cur.fetchall()
+
+    return partner_info
