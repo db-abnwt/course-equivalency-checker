@@ -86,3 +86,8 @@ def continents():
 def continent(continent_name: str):
     full_continent_name, partners = get_partners_from_continent(continent_name)
     return render_template("partners/continent.html", fcn=full_continent_name, partners=partners)
+
+
+@app.route("/apply", methods=["GET"])
+def apply():
+    return render_template("apply.html")
