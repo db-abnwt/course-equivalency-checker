@@ -30,3 +30,14 @@ def get_partners_from_continent(continent_name: str) -> tuple[str, dict[list[Par
             country2partners[country] = list(map(PartnerLink.generate_partner_link, partners_in_country))
 
         return all_countries[0][2], country2partners
+
+
+def get_all_countries() -> list[tuple[int, str]]:
+    with mysql.connect().cursor() as cur:
+        all_countries_query = f"select * " \
+                              f"from country "
+        cur.execute(all_countries_query)
+        all_countries = cur.fetchall()
+
+    # print(all_countries)
+    return all_countries

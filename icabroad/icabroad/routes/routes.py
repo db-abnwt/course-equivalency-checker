@@ -3,7 +3,7 @@ from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .rutils import get_all_continents, get_partners_from_continent
+from .rutils import *
 
 mysql = MySQL(app)
 
@@ -91,3 +91,18 @@ def continent(continent_name: str):
 @app.route("/apply", methods=["GET"])
 def apply():
     return render_template("apply.html")
+
+
+@app.route("/admin", methods=["GET"])
+def admin():
+    return render_template("admin/admin.html")
+
+
+@app.route("/admin/<zone>", methods=["GET", "POST"])
+def admin_zone(zone: str):
+    countries = get_all_countries()
+    if request.method == 'GET':
+        return render_template("admin/admin.html", zone=zone, countries=countries)
+    elif request.method == 'POST':
+        print(request.form)
+        return render_template("admin/admin.html", zone=zone, countries=countries)
