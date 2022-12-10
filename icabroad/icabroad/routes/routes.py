@@ -1,5 +1,5 @@
 from flask import current_app as app
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, Blueprint
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -7,6 +7,7 @@ from .rutils import get_all_continents, get_partners_from_continent
 from .rmodels import PartnerUniversity
 
 mysql = MySQL(app)
+routes = Blueprint("routes", __name__)
 
 
 @app.route("/", methods=["GET"])
