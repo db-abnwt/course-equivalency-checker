@@ -29,7 +29,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for z in approved_courses %}
                 {% for i in approved_courses %}
                 <tr class="table-row" onclick="selectApproved('{{i[2]}}','{{i[4]}}')">
                     <th scope="row">{{loop.index}}</th>
@@ -37,7 +36,6 @@
                     <td>{{i[2]}} {{i[3]}}</td>
                     <td>{{i[4]}} {{i[5]}}</td>
                 </tr>
-                {% endfor %}
                 {% endfor %}
                 </tbody>
 
@@ -68,13 +66,11 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for z in pn_courses %}
                             {% for i in pn_courses %}
                             <tr class="table-row" onclick="selectText('text','{{i[2]}}')">
                                 <td>{{i[1]}}</td>
                                 <td>{{i[2]}} {{i[3]}}</td>
                             </tr>
-                            {% endfor %}
                             {% endfor %}
                             </tbody>
 
@@ -131,12 +127,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for z in ic_courses %}
                             {% for i in ic_courses %}
                             <tr class="table-row" onclick="selectText('text2','{{i[0]}}')">
                                 <td>{{i[0]}} {{i[1]}}</td>
                             </tr>
-                            {% endfor %}
                             {% endfor %}
                             </tbody>
 
