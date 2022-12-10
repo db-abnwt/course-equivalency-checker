@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}International Buddy Program{% endblock title %}</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>International Buddy Program</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>
+                All outbound student exchange applicants are required to participate in international Buddy Program for
+                at least 1 trimester. You will provide us with a brief summary of your activities or anything you and
+                your buddy have experienced together during the trimester. As to what you need to do as part of the
+                program:
+            </p>
+            <ul>
+                <li>You will be linked with one or more incoming study abroad students at MUIC to help these students to
+                    settle their stay in Thailand.
+                </li>
+                <li>You will show them the campus facilities (tram service, library, sports complex) and how to use
+                    them.
+                </li>
+                <li>You should be the first contact in case your buddy needs basic help in the practicalities during
+                    their time at MUIC
+                </li>
+            </ul>
+        </div>
+    </div>
+    <button onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSfgmA1LQ8XTo7SPSeKF8dler_UVpMmlI-et7J-hQmNblbRdsQ/viewform';">
+        Sign up
+    </button>
+</div>
+{% endblock %}
+</body>
+</html>
