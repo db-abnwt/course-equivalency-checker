@@ -106,7 +106,12 @@ def admin_zone(zone: str):
         args = request.args.get('uni')
         if args:
             partner_info = get_partners_from_name(args)
-            return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities, fill=partner_info[0])
+            return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities,
+                                   fill=partner_info[0])
         return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities)
     elif request.method == 'POST':
+        uniDetails = request.form
+        noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uniDetails.values())
+        # print(noneList)
+        add_partners(noneList)
         return render_template("admin/admin.html", zone=zone, countries=countries)

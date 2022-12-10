@@ -64,3 +64,14 @@ def get_partners_from_name(name: str) -> Any | None:
         partner_info = cur.fetchall()
 
     return partner_info
+
+
+def add_partners(res: tuple[Any]):
+    with mysql.connect().cursor() as cur:
+        add_uni_query = "INSERT INTO " \
+                        "partner_university(uni_name, country_id, required_gpa, housing_type, " \
+                        "est_cost_max, est_cost_min, map_link, incoming_stu_link) " \
+                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cur.execute(add_uni_query, res)
+        cur.connection.commit()
+    return
