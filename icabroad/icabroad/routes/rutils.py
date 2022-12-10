@@ -70,8 +70,30 @@ def add_partners(res: tuple[Any]):
     with mysql.connect().cursor() as cur:
         add_uni_query = "INSERT INTO " \
                         "partner_university(uni_name, country_id, required_gpa, housing_type, " \
-                        "est_cost_max, est_cost_min, map_link, incoming_stu_link) " \
-                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                        "est_cost_max, est_cost_min, map_link, incoming_stu_link, course_open_link) " \
+                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cur.execute(add_uni_query, res)
+        cur.connection.commit()
+    return
+
+
+def edit_partners(res: tuple[Any], index: int):
+    with mysql.connect().cursor() as cur:
+        edit_uni_query = "UPDATE partner_university " \
+                         "SET uni_name = %s, country_id = %s," \
+                         "required_gpa = %s, housing_type = %s," \
+                         "est_cost_max = %s, est_cost_min = %s," \
+                         "map_link = %s, incoming_stu_link = %s," \
+                         "course_open_link = %s " \
+                         f"WHERE uni_id = {index};"
+        cur.execute(edit_uni_query, res)
+        cur.connection.commit()
+    return
+
+
+def delete_partners(name: str):
+    with mysql.connect().cursor() as cur:
+        delete_uni_query = "DELETE FROM partner_university   WHERE uni_name = %s"
+        cur.execute(delete_uni_query, name)
         cur.connection.commit()
     return

@@ -1,4 +1,4 @@
-from flask import current_app as app
+from flask import current_app as app, url_for
 from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -101,17 +101,31 @@ def admin():
 @app.route("/admin/<zone>", methods=["GET", "POST"])
 def admin_zone(zone: str):
     countries = get_all_countries()
-    universities = get_all_universities()
     if request.method == 'GET':
         args = request.args.get('uni')
         if args:
             partner_info = get_partners_from_name(args)
-            return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities,
+            return render_template("admin/admin.html", zone=zone, countries=countries,
+                                   universities=get_all_universities(),
                                    fill=partner_info[0])
-        return render_template("admin/admin.html", zone=zone, countries=countries, universities=universities)
+        return render_template("admin/admin.html", zone=zone, countries=countries, universities=get_all_universities())
     elif request.method == 'POST':
         uniDetails = request.form
-        noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uniDetails.values())
-        # print(noneList)
+        noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in list(uniDetails.values())[1:])
         add_partners(noneList)
         return render_template("admin/admin.html", zone=zone, countries=countries)
+
+
+@app.route("/admin/partner/edit", methods=["POST"])
+def edit_partner():
+    uniDetails = list(request.form.values())
+    index = uniDetails[0]
+    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uniDetails[1:])
+    edit_partners(noneList, index)
+    return redirect('/admin/partner')
+
+
+@app.route("/admin/partner/delete/<name>", methods=["GET"])
+def delete_partner(name: str):
+    delete_partners(name)
+    return redirect('/admin/partner')
