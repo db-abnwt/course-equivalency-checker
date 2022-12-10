@@ -4,7 +4,7 @@ from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .rutils import get_all_continents, get_partners_from_continent
-from .rmodels import PartnerUniversity
+from .rmodels import PartnerUniversity, QuestionAndAnswer
 
 mysql = MySQL(app)
 routes = Blueprint("routes", __name__)
@@ -112,3 +112,14 @@ def apply():
 @app.route("/buddy", methods=["GET"])
 def buddy():
     return render_template("buddy.html")
+
+
+@app.route("/faq", methods=["GET"])
+def faq():
+    with mysql.connect().cursor() as cur:
+        query = f"select question, answer " \
+                f"from faq"
+        cur.execute(query)
+        raw_res = cur.fetchall()
+        qas = list(map(QuestionAndAnswer.generate_qa, raw_res))
+    return render_template("faq.html", qas=qas)
