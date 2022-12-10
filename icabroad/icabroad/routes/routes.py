@@ -108,8 +108,10 @@ def admin_zone(zone: str):
             return render_template("admin/admin.html", zone=zone, countries=countries,
                                    universities=get_all_universities(),
                                    fill=partner_info[0])
+        pn_courses, ic_courses = get_all_courses()
         return render_template("admin/admin.html", zone=zone, countries=countries, universities=get_all_universities(),
-                               approved_courses=get_all_approved_courses())
+                               approved_courses=get_all_approved_courses(), pn_courses=pn_courses,
+                               ic_courses=ic_courses)
     elif request.method == 'POST':
         uniDetails = request.form
         noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in list(uniDetails.values())[1:])
@@ -130,3 +132,13 @@ def edit_partner():
 def delete_partner(name: str):
     delete_partners(name)
     return redirect('/admin/partner')
+
+
+@app.route("/admin/course/<state>", methods=["POST"])
+def course_link(state):
+    linkDetails = tuple(request.form.values())
+    if state == 'link':
+        link_courses(linkDetails)
+    else:
+        unlink_courses(linkDetails)
+    return redirect('/admin/course')

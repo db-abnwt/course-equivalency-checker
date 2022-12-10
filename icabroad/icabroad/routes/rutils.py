@@ -109,3 +109,33 @@ def get_all_approved_courses():
         cur.execute(approved_courses_query)
         approved_course_info = cur.fetchall()
     return approved_course_info
+
+
+def get_all_courses():
+    with mysql.connect().cursor() as cur:
+        pn_course_query = """select a.uni_id, b.uni_name, a.pn_cid, a.pn_name, a.credits, a.major 
+                                    from partner_course as a 
+                                        left join partner_university as b on a.uni_id = b.uni_id"""
+        cur.execute(pn_course_query)
+        all_pn_course = cur.fetchall()
+
+        ic_course_query = """select * from ic_course"""
+        cur.execute(ic_course_query)
+        all_ic_course = cur.fetchall()
+    return all_pn_course, all_ic_course
+
+
+def link_courses(tup):
+    with mysql.connect().cursor() as cur:
+        link_course_query = "insert into approved_course(pn_cid, ic_cid) values(%s, %s)"
+        cur.execute(link_course_query, tup)
+        cur.connection.commit()
+    return
+
+
+def unlink_courses(tup):
+    with mysql.connect().cursor() as cur:
+        unlink_course_query = "delete from approved_course where pn_cid = %s and ic_cid = %s"
+        cur.execute(unlink_course_query, tup)
+        cur.connection.commit()
+    return

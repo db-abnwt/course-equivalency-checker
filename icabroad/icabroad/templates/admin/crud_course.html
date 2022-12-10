@@ -14,7 +14,8 @@
 
     <div class="m-3">
         <div class="mb-3">
-            <input class="form-control" onkeyup="search('table', 'search')" name="search" id="search" placeholder="Search course links">
+            <input class="form-control" onkeyup="search('table', 'search')" name="search" id="search"
+                   placeholder="Search course links">
         </div>
         <div class="table-responsive">
 
@@ -30,7 +31,7 @@
                 <tbody>
                 {% for z in approved_courses %}
                 {% for i in approved_courses %}
-                <tr class="table-row" onclick="">
+                <tr class="table-row" onclick="selectApproved('{{i[2]}}','{{i[4]}}')">
                     <th scope="row">{{loop.index}}</th>
                     <td>{{i[1]}}</td>
                     <td>{{i[2]}} {{i[3]}}</td>
@@ -67,8 +68,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for z in approved_courses %}
-                            {% for i in approved_courses %}
+                            {% for z in pn_courses %}
+                            {% for i in pn_courses %}
                             <tr class="table-row" onclick="selectText('text','{{i[2]}}')">
                                 <td>{{i[1]}}</td>
                                 <td>{{i[2]}} {{i[3]}}</td>
@@ -82,30 +83,38 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="my-4">
-                        <input class="form-control" onkeyup="" name="text" id="text"
-                               placeholder="Search course links">
-                    </div>
-                    <div style="text-align: center;">
-                        <button class="btn btn-primary mx-4">
-                            <-
-                        </button>
-                        <button class="btn btn-primary mx-4">
-                            ->
-                        </button>
-                    </div>
-                    <div class="my-4">
-                        <input class="form-control" onkeyup="" name="text2" id="text2"
-                               placeholder="Search course links">
-                    </div>
-                    <div style="text-align: center;">
-                        <button class="btn btn-primary mx-4">
-                            Link
-                        </button>
-                        <button class="btn btn-primary mx-4">
-                            Unlink
-                        </button>
-                    </div>
+                    <form action="/admin/course/link" method="post">
+                        <div class="my-4">
+                            <input class="form-control" name="text" id="text"
+                                   placeholder="Host's Course" readonly>
+                        </div>
+                        <div class="row" style="text-align: center;">
+                            <div class="col" style="text-align: left;">
+                                <button type="button" class="btn btn-primary mx-4" onclick="emptyField('text')">
+                                    <---
+                                </button>
+                            </div>
+                            <div class="col" style="text-align: right;">
+                                <button type="button" class="btn btn-primary mx-4" onclick="emptyField('text2')">
+                                    --->
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="my-4">
+                            <input class="form-control" style="text-align: right;" name="text2" id="text2"
+                                   placeholder="Muic's Course" readonly>
+                        </div>
+                        <div style="text-align: center;">
+                            <button type="submit" id="link" class="btn btn-primary mx-4">
+                                Link
+                            </button>
+                            <button type="submit" formaction="/admin/course/unlink" id="unlink"
+                                    class="btn btn-primary mx-4">
+                                Unlink
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div class="col">
                     <a>MUIC's Course</a>
@@ -122,10 +131,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for z in approved_courses %}
-                            {% for i in approved_courses %}
-                            <tr class="table-row" onclick="selectText('text2','{{i[4]}}')">
-                                <td>{{i[4]}} {{i[5]}}</td>
+                            {% for z in ic_courses %}
+                            {% for i in ic_courses %}
+                            <tr class="table-row" onclick="selectText('text2','{{i[0]}}')">
+                                <td>{{i[0]}} {{i[1]}}</td>
                             </tr>
                             {% endfor %}
                             {% endfor %}
@@ -170,6 +179,19 @@
 
     function selectText(textId, course) {
         document.getElementById(textId).value = course;
+        document.getElementById('link').setAttribute("class", "btn btn-primary mx-4")
+        document.getElementById('unlink').setAttribute("class", "btn btn-primary mx-4 disabled")
+    }
+
+    function selectApproved(course1, course2) {
+        document.getElementById('text').value = course1;
+        document.getElementById('text2').value = course2;
+        document.getElementById('link').setAttribute("class", "btn btn-primary mx-4 disabled")
+        document.getElementById('unlink').setAttribute("class", "btn btn-primary mx-4")
+    }
+
+    function emptyField(fieldId) {
+        document.getElementById(fieldId).value = "";
     }
 </script>
 </html>
