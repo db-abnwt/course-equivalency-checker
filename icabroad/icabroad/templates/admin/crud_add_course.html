@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .table-row {
+        cursor: pointer;
+    }
+
+    .table-responsive {
+        max-height: 20vh;
+    }
+</style>
+<body>
+<main>
+    <div class="mb-3">
+        <div class="row">
+            <div class="col">
+                <form action="/admin/course/add_pn" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Add Host's course</label>
+                        <div class="input-group">
+                            <input class="input-group-text form_input" name="index" id="index" readonly hidden>
+                            <input class="form-control" id="text" placeholder="Select University">
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" onkeyup="search2('table','search1')" id="search1"
+                                   placeholder="Search unis">
+                        </div>
+                        <div class="table-responsive">
+
+                            <table class="table" id="table">
+                                <tbody>
+                                {% for i in universities %}
+                                <tr class="table-row" onclick="selectText('text','{{i[1]}}','index','{{i[0]}}')">
+                                    <td>{{i[1]}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Course ID</span>
+                        <input type="text" name="id" id="id" class="form-control" placeholder="eg. iccs101">
+                        <span class="input-group-text">Major</span>
+                        <input type="text" name="major" id="major" class="form-control"
+                               placeholder="eg. computer science">
+                        <span class="input-group-text">Credits</span>
+                        <input type="text" style="max-width: 50px" name="creds" id="creds" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Course Name</label>
+                        <input class="form-control" name="incomingLink" id="name"
+                               placeholder="eg. Introduction to Programming">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                    <button type="submit" class="btn btn-primary disabled" id="edit">Save Edit</button>
+                    <a href="/admin/partner" class="btn btn-primary" role="button">Clear</a>
+                </form>
+            </div>
+
+            <div class="col">
+                <form action="/admin/course/add_ic" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Add MUIC's course</label>
+
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Course ID</span>
+                        <input type="text" name="id" id="id2" class="form-control" placeholder="eg. iccs101">
+                        <span class="input-group-text">Major</span>
+                        <input type="text" name="major" id="major2" class="form-control"
+                               placeholder="eg. computer science">
+                        <span class="input-group-text">Credits</span>
+                        <input type="text" name="creds" style="max-width: 50px" id="creds2" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Course Name</label>
+                        <input class="form-control" name="incomingLink" id="name2"
+                               placeholder="eg. Introduction to Programming">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submit2">Submit</button>
+                    <button type="submit" class="btn btn-primary disabled" id="edit2">Save Edit</button>
+                    <a href="/admin/partner" class="btn btn-primary" role="button">Clear</a>
+                </form>
+                <div class="my-3">
+                    <div class="input-group">
+                        <input class="" onkeyup="search2('table3','search3')" name="search" id="search3"
+                               placeholder="Search">
+                        <h4>Click row to edit</h4>
+                    </div>
+                    <div class="table-responsive">
+
+                        <table class="table" id="table3">
+                            <thead>
+                            <tr>
+                                <th scope="col">Host's Course</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in ic_courses %}
+                            <tr class="table-row" onclick="editIcText('{{i[0]}}', '{{i[2]}}', '{{i[1]}}', '{{i[3]}}')">
+                                <td>{{i[0]}} {{i[1]}}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="m-3">
+        <div class="input-group">
+            <input class="" onkeyup="search2('table2','search2')" name="search" id="search2"
+                   placeholder="Search">
+            <h4>Click row to edit</h4>
+        </div>
+        <div class="table-responsive">
+
+            <table class="table" id="table2">
+                <thead>
+                <tr>
+                    <th scope="col">University</th>
+                    <th scope="col">Host's Course</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in pn_courses %}
+                <tr class="table-row"
+                    onclick="editPnText('{{i[0]}}', '{{i[1]}}', '{{i[2]}}', '{{i[4]}}', '{{i[3]}}', '{{i[5]}}')">
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}} {{i[3]}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</main>
+</body>
+<script>
+    function search2(tableId, searchId) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(searchId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById(tableId);
+        tr = table.getElementsByClassName("table-row");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td");
+            if (td) {
+                txtValue = "";
+                for (let inner of td) {
+                    txtValue += (inner.textContent || inner.innerText)
+                }
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].removeAttribute("hidden")
+                } else {
+                    tr[i].setAttribute("hidden", "")
+                }
+            }
+        }
+    }
+
+    function selectText(textId, course, indexId, index) {
+        document.getElementById(textId).value = course;
+        document.getElementById(indexId).value = index;
+    }
+
+    function editPnText(index, uni, c_id, cred, name, major) {
+        document.getElementById('index').value = index;
+        document.getElementById('text').value = uni;
+        document.getElementById('id').value = c_id;
+        document.getElementById('creds').value = cred;
+        document.getElementById('name').value = name;
+        document.getElementById('major').value = major;
+    }
+
+    function editIcText(c_id, cred, name, major) {
+        document.getElementById('id2').value = c_id;
+        document.getElementById('creds2').value = cred;
+        document.getElementById('name2').value = name;
+        document.getElementById('major2').value = major;
+    }
+</script>
+</html>

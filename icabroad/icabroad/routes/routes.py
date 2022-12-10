@@ -134,11 +134,23 @@ def delete_partner(name: str):
     return redirect('/admin/partner')
 
 
-@app.route("/admin/course/<state>", methods=["POST"])
+@app.route("/admin/linker/<state>", methods=["POST"])
 def course_link(state):
     linkDetails = tuple(request.form.values())
     if state == 'link':
         link_courses(linkDetails)
     else:
         unlink_courses(linkDetails)
-    return redirect('/admin/course')
+    return redirect('/admin/linker')
+
+
+@app.route("/admin/course/<state>", methods=["POST"])
+def crud_course(state):
+    courseDetails = tuple(request.form.values())
+    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in courseDetails)
+    print(noneList)
+    if state == 'add_pn':
+        add_partner_course(noneList)
+    elif state == 'add_ic':
+        add_ic_course(noneList)
+    return redirect("/admin/course")

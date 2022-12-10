@@ -139,3 +139,19 @@ def unlink_courses(tup):
         cur.execute(unlink_course_query, tup)
         cur.connection.commit()
     return
+
+
+def add_partner_course(tup):
+    with mysql.connect().cursor() as cur:
+        add_partner_query = "insert into partner_course(uni_id, pn_cid, major, credits, pn_name) values(%s, %s, %s, %s, %s)"
+        cur.execute(add_partner_query, tup)
+        cur.connection.commit()
+    return
+
+
+def add_ic_course(tup):
+    with mysql.connect().cursor() as cur:
+        add_partner_query = "insert into ic_course(ic_cid, major, credits, ic_name) values(%s, %s, %s, %s)"
+        cur.execute(add_partner_query, tup)
+        cur.connection.commit()
+    return
