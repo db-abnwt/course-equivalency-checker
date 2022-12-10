@@ -97,3 +97,15 @@ def delete_partners(name: str):
         cur.execute(delete_uni_query, name)
         cur.connection.commit()
     return
+
+
+def get_all_approved_courses():
+    with mysql.connect().cursor() as cur:
+        approved_courses_query = """select a.id, c.uni_name, a.pn_cid, b.pn_name, a.ic_cid, d.ic_name 
+                                    from approved_course as a 
+                                        left join partner_course as b on a.pn_cid = b.pn_cid 
+                                        left join partner_university as c on b.uni_id = c.uni_id 
+                                        left join ic_course as d on a.ic_cid = d.ic_cid; """
+        cur.execute(approved_courses_query)
+        approved_course_info = cur.fetchall()
+    return approved_course_info

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .table-row {
+        cursor: pointer;
+    }
+
+    .table-responsive {
+        max-height: 30vh;
+    }
+</style>
+<body>
+<main>
+
+    <div class="m-3">
+        <div class="mb-3">
+            <input class="form-control" onkeyup="search('table', 'search')" name="search" id="search" placeholder="Search course links">
+        </div>
+        <div class="table-responsive">
+
+            <table class="table" id="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">University</th>
+                    <th scope="col">Host's Course</th>
+                    <th scope="col">MUIC's Course</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for z in approved_courses %}
+                {% for i in approved_courses %}
+                <tr class="table-row" onclick="">
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}} {{i[3]}}</td>
+                    <td>{{i[4]}} {{i[5]}}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+
+        <div class="container-fluid">
+
+            <div class="row align-items-start mx-2">
+                <div class="col">
+                    <a>Host's Course</a>
+                    <div class="mb-3">
+                        <input class="form-control" onkeyup="search('table2','search2')" name="search" id="search2"
+                               placeholder="Search host course">
+                    </div>
+                    <div class="table-responsive">
+
+                        <table class="table" id="table2">
+                            <thead>
+                            <tr>
+                                <th scope="col">University</th>
+                                <th scope="col">Host's Course</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for z in approved_courses %}
+                            {% for i in approved_courses %}
+                            <tr class="table-row" onclick="selectText('text','{{i[2]}}')">
+                                <td>{{i[1]}}</td>
+                                <td>{{i[2]}} {{i[3]}}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="my-4">
+                        <input class="form-control" onkeyup="" name="text" id="text"
+                               placeholder="Search course links">
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary mx-4">
+                            <-
+                        </button>
+                        <button class="btn btn-primary mx-4">
+                            ->
+                        </button>
+                    </div>
+                    <div class="my-4">
+                        <input class="form-control" onkeyup="" name="text2" id="text2"
+                               placeholder="Search course links">
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary mx-4">
+                            Link
+                        </button>
+                        <button class="btn btn-primary mx-4">
+                            Unlink
+                        </button>
+                    </div>
+                </div>
+                <div class="col">
+                    <a>MUIC's Course</a>
+                    <div class="mb-3">
+                        <input class="form-control" onkeyup="search('table3','search3')" name="search" id="search3"
+                               placeholder="Search course links">
+                    </div>
+                    <div class="table-responsive">
+
+                        <table class="table" id="table3">
+                            <thead>
+                            <tr>
+                                <th scope="col">MUIC's Course</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for z in approved_courses %}
+                            {% for i in approved_courses %}
+                            <tr class="table-row" onclick="selectText('text2','{{i[4]}}')">
+                                <td>{{i[4]}} {{i[5]}}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+</body>
+
+<script>
+    function search(tableId, searchId) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(searchId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById(tableId);
+        tr = table.getElementsByClassName("table-row");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td");
+            if (td) {
+                txtValue = "";
+                for (let inner of td) {
+                    txtValue += (inner.textContent || inner.innerText)
+                }
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].removeAttribute("hidden")
+                } else {
+                    tr[i].setAttribute("hidden", "")
+                }
+            }
+        }
+    }
+
+    function selectText(textId, course) {
+        document.getElementById(textId).value = course;
+    }
+</script>
+</html>
