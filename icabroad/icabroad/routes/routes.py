@@ -106,3 +106,8 @@ def partner_by_id(uni_id: int):
 @app.route("/apply", methods=["GET"])
 def apply():
     return render_template("apply.html")
+
+
+@app.route("/buddy", methods=["GET"])
+def buddy():
+    return render_template("buddy.html")
