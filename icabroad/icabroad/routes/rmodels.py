@@ -43,3 +43,12 @@ class PartnerUniversity:
             uni_response[7],
             uni_response[8]
         )
+
+
+class QuestionAndAnswer:
+    def __init__(self, qa_tup: tuple[str, str]):
+        self.question, self.answer = qa_tup
+
+    @staticmethod
+    def generate_qa(qa_tup: tuple[str, str]):
+        return QuestionAndAnswer(qa_tup)

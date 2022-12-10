@@ -5,7 +5,7 @@ config = yaml.load(open("config.yaml", "r"), yaml.Loader)
 
 
 def create_app():
-    config = yaml.load(open("config.yaml", "r"), yaml.Loader)
+    inner_config = yaml.load(open("config.yaml", "r"), yaml.Loader)
     flask = Flask(__name__, instance_relative_config=True)
 
     with flask.app_context():
@@ -13,10 +13,10 @@ def create_app():
 
         flask.register_blueprint(routes)
 
-        flask.config["MYSQL_DATABASE_HOST"] = config["mysql_host"]
-        flask.config["MYSQL_DATABASE_USER"] = config["mysql_user"]
-        flask.config["MYSQL_DATABASE_PASSWORD"] = config["mysql_password"]
-        flask.config["MYSQL_DATABASE_DB"] = config["mysql_db"]
+        flask.config["MYSQL_DATABASE_HOST"] = inner_config["mysql_host"]
+        flask.config["MYSQL_DATABASE_USER"] = inner_config["mysql_user"]
+        flask.config["MYSQL_DATABASE_PASSWORD"] = inner_config["mysql_password"]
+        flask.config["MYSQL_DATABASE_DB"] = inner_config["mysql_db"]
 
         init_mysql = mysql
         init_mysql.init_app(flask)
