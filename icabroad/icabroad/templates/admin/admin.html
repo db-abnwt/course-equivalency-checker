@@ -8,12 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {background-color: #ebb835;}
-        div {border-style: solid}
+        /*div {border-style: solid}*/
     </style>
 </head>
 <body>
 <main>
-    <div>
+    <div class="m-2">
         <nav class="navbar navbar-expand-lg">
           <div class="container-fluid">
             <a class="navbar-brand" href="/admin">Admin</a>
@@ -23,23 +23,17 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
+                  <a class="nav-link active" aria-current="page" href="/home">Home</a>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown
+                    Add/Edit
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/admin/partner">Add University</a></li>
-                    <li><a class="dropdown-item" href="/admin/linker">Add course links</a></li>
-                    <li><a class="dropdown-item" href="/admin/course">Add uni courses</a></li>
+                    <li><a class="dropdown-item" href="/admin/partner">University</a></li>
+                    <li><a class="dropdown-item" href="/admin/course">University Course</a></li>
+                    <li><a class="dropdown-item" href="/admin/linker">Course Equivalency</a></li>
                   </ul>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link disabled">Disabled</a>
                 </li>
               </ul>
               <form class="d-flex" role="search">
