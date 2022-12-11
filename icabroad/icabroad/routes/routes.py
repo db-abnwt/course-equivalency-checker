@@ -1,9 +1,9 @@
-from flask import current_app as app
-from flask import render_template, redirect, request, Blueprint
+from flask import current_app as app, url_for
+from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .rutils import get_all_continents, get_partners_from_continent
+from .rutils import *
 from .rmodels import PartnerUniversity, QuestionAndAnswer
 
 mysql = MySQL(app)
@@ -107,6 +107,78 @@ def partner_by_id(uni_id: int):
 @app.route("/apply", methods=["GET"])
 def apply():
     return render_template("apply.html")
+
+
+@app.route("/admin", methods=["GET"])
+def admin():
+    return render_template("admin/admin.html")
+
+
+@app.route("/admin/<zone>", methods=["GET", "POST"])
+def admin_zone(zone: str):
+    countries = get_all_countries()
+    if request.method == 'GET':
+        args = request.args.get('uni')
+        if args:
+            partner_info = get_partners_from_name(args)
+            return render_template("admin/admin.html", zone=zone, countries=countries,
+                                   universities=get_all_universities(),
+                                   fill=partner_info[0])
+        pn_courses, ic_courses = get_all_courses()
+        return render_template("admin/admin.html", zone=zone, countries=countries, universities=get_all_universities(),
+                               approved_courses=get_all_approved_courses(), pn_courses=pn_courses,
+                               ic_courses=ic_courses)
+    elif request.method == 'POST':
+        uniDetails = request.form
+        noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in list(uniDetails.values())[1:])
+        add_partners(noneList)
+        return render_template("admin/admin.html", zone=zone, countries=countries)
+
+
+@app.route("/admin/partner/edit", methods=["POST"])
+def edit_partner():
+    uniDetails = list(request.form.values())
+    index = uniDetails[0]
+    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uniDetails[1:])
+    edit_partners(noneList, index)
+    return redirect('/admin/partner')
+
+
+@app.route("/admin/partner/delete/<name>", methods=["GET"])
+def delete_partner(name: str):
+    delete_partners(name)
+    return redirect('/admin/partner')
+
+
+@app.route("/admin/linker/<state>", methods=["POST"])
+def course_link(state):
+    linkDetails = tuple(request.form.values())
+    if state == 'link':
+        link_courses(linkDetails)
+    else:
+        unlink_courses(linkDetails)
+    return redirect('/admin/linker')
+
+
+@app.route("/admin/course/<state>", methods=["POST"])
+def crud_course(state):
+    courseDetails = tuple(request.form.values())
+    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in courseDetails)
+    match state:
+        case 'add_pn':
+            add_partner_course(noneList)
+        case 'add_ic':
+            add_ic_course(noneList)
+        case 'del_pn':
+            del_partner_course(noneList)
+        case 'del_ic':
+            del_ic_course(noneList)
+        case 'edit_pn':
+            edit_partner_course(noneList)
+        case 'edit_ic':
+            edit_ic_course(noneList)
+
+    return redirect("/admin/course")
 
 
 @app.route("/buddy", methods=["GET"])
