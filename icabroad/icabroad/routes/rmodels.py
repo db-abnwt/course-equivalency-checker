@@ -52,3 +52,16 @@ class QuestionAndAnswer:
     @staticmethod
     def generate_qa(qa_tup: tuple[str, str]):
         return QuestionAndAnswer(qa_tup)
+
+
+class EqualCoursePair:
+    def __init__(self, ce_tup):
+        self.pn_uname = ce_tup[0]
+        self.pn_cid = ce_tup[1]
+        self.pn_cname = ce_tup[2]
+        self.ic_cid = ce_tup[3]
+        self.ic_cname = ce_tup[4]
+
+    @staticmethod
+    def generate_pair(ce_tup):
+        return EqualCoursePair(ce_tup)

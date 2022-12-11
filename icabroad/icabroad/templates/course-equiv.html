@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Equivalency</title>
+    <style>
+        thead th {
+            overflow-y: auto;
+            height: 90%;
+            position: sticky;
+            top: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<form action="/course-equiv/search" method="get">
+    <div class="input-group">
+        <span class="input-group-text">Criteria</span>
+        <select class="form-select form_input" name="criteria">
+            <option selected>Select criteria</option>
+            {% for type in ["Country", "Major", "Host course name", "MUIC course name", "Host university name"] %}
+            <option value={{ type }}>{{ type }}</option>
+            {% endfor %}
+        </select>
+        <span class="input-group-text">Search term</span>
+        <input type="text" name="searchTerm" id="searchTerm" class="form-control">
+    </div>
+    <button type="submit">Search</button>
+</form>
+<div class="container-fluid">
+    <table class="table" id="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">University</th>
+            <th scope="col">Host's Course</th>
+            <th scope="col">MUIC's Course</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ec in ecs %}
+        <tr class="table-row">
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ ec.pn_uname }}</td>
+            <td>{{ ec.pn_cid + " " + ec.pn_cname }}</td>
+            <td>{{ ec.ic_cid + " " + ec.ic_cname }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+</body>
+</html>
