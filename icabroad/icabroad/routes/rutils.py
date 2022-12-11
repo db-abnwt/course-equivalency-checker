@@ -207,7 +207,7 @@ def create_course_search_query(rq_params: dict[str, str]):
             extension = f"join country c on pu.country_id = c.country_id " \
                         f"where lower(c.name) = '{search_term}'"
         case "major":
-            extension = f"where lower(pc.major) = '{search_term}'"
+            extension = f"where lower(ic.major) = '%{search_term}%'"
         case "host course name":
             extension = f"where lower(pc.pn_name) = '{search_term}' " \
                         f"or lower(pc.pn_cid) = '{search_term}'"
