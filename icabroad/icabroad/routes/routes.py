@@ -1,10 +1,9 @@
-from flask import current_app as app, url_for, Blueprint
+from flask import Blueprint
 from flask import render_template, redirect, request
-from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
 from .rutils import *
-from .rmodels import PartnerUniversity, QuestionAndAnswer
 
 mysql = MySQL(app)
 routes = Blueprint("routes", __name__)
@@ -39,10 +38,10 @@ def login():
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
-                    return render_template("auth/login.html", error="Success") \
-                        , {"Refresh": "3; url=/"}
+                    return render_template("auth/login.html", error="Success"), \
+                        {"Refresh": "3; url=/"}
                 return render_template("auth/login.html", error="Wrong password")
-            except:
+            except Any:
                 return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
     return render_template("auth/login.html")
 
@@ -71,9 +70,9 @@ def register():
                 )
                 cur.execute(query)
                 cur.connection.commit()
-                return render_template('auth/register.html', error='Register Succesful, Redirecting to Login Page') \
-                    , {"Refresh": "3; url=/login"}
-            except:
+                return render_template('auth/register.html', error='Register Successful, Redirecting to Login Page'), \
+                    {"Refresh": "3; url=/login"}
+            except Any:
                 return render_template('auth/register.html', error='Kaboom')
     return render_template('auth/register.html')
 
@@ -129,18 +128,18 @@ def admin_zone(zone: str):
                                approved_courses=get_all_approved_courses(), pn_courses=pn_courses,
                                ic_courses=ic_courses)
     elif request.method == 'POST':
-        uniDetails = request.form
-        noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in list(uniDetails.values())[1:])
-        add_partners(noneList)
+        uni_details = request.form
+        none_list = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in list(uni_details.values())[1:])
+        add_partners(none_list)
         return render_template("admin/admin.html", zone=zone, countries=countries)
 
 
 @app.route("/admin/partner/edit", methods=["POST"])
 def edit_partner():
-    uniDetails = list(request.form.values())
-    index = uniDetails[0]
-    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uniDetails[1:])
-    edit_partners(noneList, index)
+    uni_details = list(request.form.values())
+    index = uni_details[0]
+    none_list = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in uni_details[1:])
+    edit_partners(none_list, index)
     return redirect('/admin/partner')
 
 
@@ -152,31 +151,31 @@ def delete_partner(name: str):
 
 @app.route("/admin/linker/<state>", methods=["POST"])
 def course_link(state):
-    linkDetails = tuple(request.form.values())
+    link_details = tuple(request.form.values())
     if state == 'link':
-        link_courses(linkDetails)
+        link_courses(link_details)
     else:
-        unlink_courses(linkDetails)
+        unlink_courses(link_details)
     return redirect('/admin/linker')
 
 
 @app.route("/admin/course/<state>", methods=["POST"])
 def crud_course(state):
-    courseDetails = tuple(request.form.values())
-    noneList = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in courseDetails)
+    course_details = tuple(request.form.values())
+    none_list = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in course_details)
     match state:
         case 'add_pn':
-            add_partner_course(noneList)
+            add_partner_course(none_list)
         case 'add_ic':
-            add_ic_course(noneList)
+            add_ic_course(none_list)
         case 'del_pn':
-            del_partner_course(noneList)
+            del_partner_course(none_list)
         case 'del_ic':
-            del_ic_course(noneList)
+            del_ic_course(none_list)
         case 'edit_pn':
-            edit_partner_course(noneList)
+            edit_partner_course(none_list)
         case 'edit_ic':
-            edit_ic_course(noneList)
+            edit_ic_course(none_list)
 
     return redirect("/admin/course")
 
@@ -195,3 +194,17 @@ def faq():
         raw_res = cur.fetchall()
         qas = list(map(QuestionAndAnswer.generate_qa, raw_res))
     return render_template("faq.html", qas=qas)
+
+
+@app.route("/course-equiv", methods=["GET"])
+def course_equiv():
+    with mysql.connect().cursor() as cur:
+        query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
+                f"from partner_course pc " \
+                f"join approved_course ac on pc.n_id = ac.n_id " \
+                f"join ic_course ic on ic.c_id = ac.c_id " \
+                f"join partner_university pu on pc.uni_id = pu.uni_id;"
+        cur.execute(query)
+        raw_pairings = cur.fetchall()
+        equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
+    return render_template("course-equiv.html", ecs=equal_courses)

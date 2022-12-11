@@ -66,7 +66,7 @@ def get_partners_from_name(name: str) -> Any | None:
     return partner_info
 
 
-def add_partners(res: tuple[Any]):
+def add_partners(res: tuple[Any, ...]):
     with mysql.connect().cursor() as cur:
         add_uni_query = "INSERT INTO " \
                         "partner_university(uni_name, country_id, required_gpa, housing_type, " \
@@ -77,7 +77,7 @@ def add_partners(res: tuple[Any]):
     return
 
 
-def edit_partners(res: tuple[Any], index):
+def edit_partners(res: tuple[Any, ...], index):
     with mysql.connect().cursor() as cur:
         edit_uni_query = "UPDATE partner_university " \
                          "SET uni_name = %s, country_id = %s," \

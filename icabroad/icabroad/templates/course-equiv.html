@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Equivalency</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+<table class="table" id="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">University</th>
+        <th scope="col">Host's Course</th>
+        <th scope="col">MUIC's Course</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for ec in ecs %}
+    <tr class="table-row">
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ ec.pn_uname }}</td>
+        <td>{{ ec.pn_cid + " " + ec.pn_cname }}</td>
+        <td>{{ ec.ic_cid + " " + ec.ic_cname }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+</body>
+</html>
