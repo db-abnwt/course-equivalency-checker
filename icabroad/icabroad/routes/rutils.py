@@ -101,11 +101,11 @@ def delete_partners(name: str):
 
 def get_all_approved_courses():
     with mysql.connect().cursor() as cur:
-        approved_courses_query = """select a.id, c.uni_name, a.pn_cid, b.pn_name, a.ic_cid, d.ic_name 
-                                    from approved_course as a 
-                                        left join partner_course as b on a.pn_cid = b.pn_cid 
-                                        left join partner_university as c on b.uni_id = c.uni_id 
-                                        left join ic_course as d on a.ic_cid = d.ic_cid; """
+        approved_courses_query = """select a.id, c.uni_name, b.pn_cid, b.pn_name, d.ic_cid, d.ic_name, a.n_id, a.c_id
+                                    from approved_course as a
+                                             left join partner_course as b on a.n_id = b.n_id
+                                             left join partner_university as c on b.uni_id = c.uni_id
+                                             left join ic_course as d on a.c_id = d.c_id; """
         cur.execute(approved_courses_query)
         approved_course_info = cur.fetchall()
     return approved_course_info
@@ -113,7 +113,7 @@ def get_all_approved_courses():
 
 def get_all_courses():
     with mysql.connect().cursor() as cur:
-        pn_course_query = """select a.uni_id, b.uni_name, a.pn_cid, a.pn_name, a.credits, a.major 
+        pn_course_query = """select a.uni_id, b.uni_name, a.pn_cid, a.pn_name, a.credits, a.major, a.n_id
                                     from partner_course as a 
                                         left join partner_university as b on a.uni_id = b.uni_id"""
         cur.execute(pn_course_query)
@@ -127,7 +127,7 @@ def get_all_courses():
 
 def link_courses(tup):
     with mysql.connect().cursor() as cur:
-        link_course_query = "insert into approved_course(pn_cid, ic_cid) values(%s, %s)"
+        link_course_query = "insert into approved_course(n_id, c_id) values(%s, %s)"
         cur.execute(link_course_query, tup)
         cur.connection.commit()
     return
@@ -135,7 +135,7 @@ def link_courses(tup):
 
 def unlink_courses(tup):
     with mysql.connect().cursor() as cur:
-        unlink_course_query = "delete from approved_course where pn_cid = %s and ic_cid = %s"
+        unlink_course_query = "delete from approved_course where n_id = %s and c_id = %s"
         cur.execute(unlink_course_query, tup)
         cur.connection.commit()
     return
@@ -152,6 +152,42 @@ def add_partner_course(tup):
 def add_ic_course(tup):
     with mysql.connect().cursor() as cur:
         add_partner_query = "insert into ic_course(ic_cid, major, credits, ic_name) values(%s, %s, %s, %s)"
-        cur.execute(add_partner_query, tup)
+        cur.execute(add_partner_query, tup[:4])
+        cur.connection.commit()
+    return
+
+
+def del_partner_course(tup):
+    with mysql.connect().cursor() as cur:
+        del_partner_query = "delete from partner_course where n_id = %s"
+        cur.execute(del_partner_query, tup[-1])
+        cur.connection.commit()
+    return
+
+
+def del_ic_course(tup):
+    with mysql.connect().cursor() as cur:
+        del_ic_query = "delete from ic_course where c_id = %s"
+        cur.execute(del_ic_query, tup[-1])
+        cur.connection.commit()
+    return
+
+
+def edit_partner_course(tup):
+    with mysql.connect().cursor() as cur:
+        del_partner_query = "update partner_course set uni_id = %s, pn_cid = %s, " \
+                            "major = %s, credits = %s, pn_name = %s " \
+                            "where n_id = %s"
+        cur.execute(del_partner_query, tup)
+        cur.connection.commit()
+    return
+
+
+def edit_ic_course(tup):
+    with mysql.connect().cursor() as cur:
+        del_partner_query = "update ic_course set ic_cid = %s, major = %s, " \
+                            "credits = %s, ic_name = %s " \
+                            "where c_id = %s"
+        cur.execute(del_partner_query, tup)
         cur.connection.commit()
     return

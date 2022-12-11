@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                 {% for i in approved_courses %}
-                <tr class="table-row" onclick="selectApproved('{{i[2]}}','{{i[4]}}')">
+                <tr class="table-row" onclick="selectApproved('{{i[2]}}','{{i[4]}}','{{i[6]}}','{{i[7]}}')">
                     <th scope="row">{{loop.index}}</th>
                     <td>{{i[1]}}</td>
                     <td>{{i[2]}} {{i[3]}}</td>
@@ -67,7 +67,7 @@
                             </thead>
                             <tbody>
                             {% for i in pn_courses %}
-                            <tr class="table-row" onclick="selectText('text','{{i[2]}}')">
+                            <tr class="table-row" onclick="selectText('text','{{i[2]}}', 'id', '{{i[-1]}}')">
                                 <td>{{i[1]}}</td>
                                 <td>{{i[2]}} {{i[3]}}</td>
                             </tr>
@@ -81,7 +81,8 @@
                 <div class="col">
                     <form action="/admin/linker/link" method="post">
                         <div class="my-4">
-                            <input class="form-control" name="text" id="text"
+                            <input name="id" id="id" readonly hidden>
+                            <input class="form-control" id="text"
                                    placeholder="Host's Course" readonly>
                         </div>
                         <div class="row" style="text-align: center;">
@@ -98,7 +99,8 @@
 
                         </div>
                         <div class="my-4">
-                            <input class="form-control" style="text-align: right;" name="text2" id="text2"
+                            <input name="id2" id="id2" readonly hidden>
+                            <input class="form-control" style="text-align: right;" id="text2"
                                    placeholder="Muic's Course" readonly>
                         </div>
                         <div style="text-align: center;">
@@ -128,8 +130,8 @@
                             </thead>
                             <tbody>
                             {% for i in ic_courses %}
-                            <tr class="table-row" onclick="selectText('text2','{{i[0]}}')">
-                                <td>{{i[0]}} {{i[1]}}</td>
+                            <tr class="table-row" onclick="selectText('text2','{{i[1]}}', 'id2', '{{i[0]}}')">
+                                <td>{{i[1]}} {{i[2]}}</td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -171,15 +173,18 @@
         }
     }
 
-    function selectText(textId, course) {
+    function selectText(textId, course, uniqueId, id) {
         document.getElementById(textId).value = course;
+        document.getElementById(uniqueId).value = id;
         document.getElementById('link').setAttribute("class", "btn btn-primary mx-4")
         document.getElementById('unlink').setAttribute("class", "btn btn-primary mx-4 disabled")
     }
 
-    function selectApproved(course1, course2) {
+    function selectApproved(course1, course2, id1, id2) {
         document.getElementById('text').value = course1;
         document.getElementById('text2').value = course2;
+        document.getElementById('id').value = id1;
+        document.getElementById('id2').value = id2;
         document.getElementById('link').setAttribute("class", "btn btn-primary mx-4 disabled")
         document.getElementById('unlink').setAttribute("class", "btn btn-primary mx-4")
     }
