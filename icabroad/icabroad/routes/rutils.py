@@ -191,3 +191,29 @@ def edit_ic_course(tup):
         cur.execute(del_partner_query, tup)
         cur.connection.commit()
     return
+
+
+def create_course_search_query(rq_params: dict[str, str]):
+    criteria = rq_params["criteria"].lower()
+    search_term = rq_params["searchTerm"].lower()
+    base_query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
+                 f"from partner_course pc " \
+                 f"join approved_course ac on pc.n_id = ac.n_id " \
+                 f"join ic_course ic on ic.c_id = ac.c_id " \
+                 f"join partner_university pu on pc.uni_id = pu.uni_id "
+    extension = ""
+    match criteria:
+        case "country":
+            extension = f"join country c on pu.country_id = c.country_id " \
+                        f"where lower(c.name) = '{search_term}'"
+        case "major":
+            extension = f"where lower(pc.major) = '{search_term}'"
+        case "host course name":
+            extension = f"where lower(pc.pn_name) = '{search_term}' " \
+                        f"or lower(pc.pn_cid) = '{search_term}'"
+        case "muic course name":
+            extension = f"where lower(ic.pn_name) = '{search_term}' " \
+                        f"or lower(ic.pn_cid) = '{search_term}'"
+        case "host university name":
+            extension = f"where lower(pu.uni_name) like '%{search_term}%'"
+    return base_query + extension

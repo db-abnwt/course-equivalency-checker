@@ -29,17 +29,20 @@
 <body>
 {% extends "base.html" %}
 {% block content %}
-<div class="input-group">
-    <span class="input-group-text">Criteria</span>
-    <select class="form-select form_input" name="country" id="country">
-        <option selected>Select criteria</option>
-        {% for type in ["Country", "Major", "Host course name", "MUIC course name", "Host university name"] %}
-        <option value={{ type }}>{{ type }}</option>
-        {% endfor %}
-    </select>
-    <span class="input-group-text">Search term</span>
-    <input type="text" name="searchTerm" id="searchTerm" class="form-control">
-</div>
+<form action="/course-equiv/search" method="get">
+    <div class="input-group">
+        <span class="input-group-text">Criteria</span>
+        <select class="form-select form_input" name="criteria">
+            <option selected>Select criteria</option>
+            {% for type in ["Country", "Major", "Host course name", "MUIC course name", "Host university name"] %}
+            <option value={{ type }}>{{ type }}</option>
+            {% endfor %}
+        </select>
+        <span class="input-group-text">Search term</span>
+        <input type="text" name="searchTerm" id="searchTerm" class="form-control">
+    </div>
+    <button type="submit">Search</button>
+</form>
 <div class="container-fluid">
     <table class="table" id="table">
         <thead>

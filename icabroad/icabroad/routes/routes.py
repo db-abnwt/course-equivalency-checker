@@ -208,3 +208,14 @@ def course_equiv():
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
     return render_template("course-equiv.html", ecs=equal_courses)
+
+
+@app.route("/course-equiv/search", methods=["GET"])
+def course_equiv_search():
+    params = request.args
+    with mysql.connect().cursor() as cur:
+        query = create_course_search_query(params)
+        cur.execute(query)
+        raw_pairings = cur.fetchall()
+        equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
+    return render_template("course-equiv.html", ecs=equal_courses)
