@@ -1,4 +1,4 @@
-from flask import current_app as app, url_for
+from flask import current_app as app, url_for, Blueprint
 from flask import render_template, redirect, request
 from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
