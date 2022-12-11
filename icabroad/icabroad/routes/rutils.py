@@ -77,7 +77,7 @@ def add_partners(res: tuple[Any]):
     return
 
 
-def edit_partners(res: tuple[Any], index: int):
+def edit_partners(res: tuple[Any], index):
     with mysql.connect().cursor() as cur:
         edit_uni_query = "UPDATE partner_university " \
                          "SET uni_name = %s, country_id = %s," \
