@@ -5,22 +5,26 @@ config = yaml.load(open("config.yaml", "r"), yaml.Loader)
 
 
 def create_app():
+    inner_config = yaml.load(open("config.yaml", "r"), yaml.Loader)
     flask = Flask(__name__, instance_relative_config=True)
 
     with flask.app_context():
-        from routes import routes
+        from icabroad.routes.routes import routes, mysql
 
-        flask.config["MYSQL_DATABASE_HOST"] = config["mysql_host"]
-        flask.config["MYSQL_DATABASE_USER"] = config["mysql_user"]
-        flask.config["MYSQL_DATABASE_PASSWORD"] = config["mysql_password"]
-        flask.config["MYSQL_DATABASE_DB"] = config["mysql_db"]
+        flask.register_blueprint(routes)
 
-        init_mysql = routes.mysql
+        flask.config["MYSQL_DATABASE_HOST"] = inner_config["mysql_host"]
+        flask.config["MYSQL_DATABASE_USER"] = inner_config["mysql_user"]
+        flask.config["MYSQL_DATABASE_PASSWORD"] = inner_config["mysql_password"]
+        flask.config["MYSQL_DATABASE_DB"] = inner_config["mysql_db"]
+
+        init_mysql = mysql
         init_mysql.init_app(flask)
 
         return flask
 
 
+current_app = create_app()
+
 if __name__ == "__main__":
-    current_app = create_app()
     current_app.run(host=config.get("target_ip"), debug=True)

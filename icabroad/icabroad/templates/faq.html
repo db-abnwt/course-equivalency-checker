@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}FAQ{% endblock title %}</title>
+</head>
+<body>
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% for qa in qas %}
+            <div class="container-fluid">
+                <b>{{ qa.question }}</b>
+                <p>{{ qa.answer }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

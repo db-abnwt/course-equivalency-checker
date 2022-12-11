@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ u.name }}{% endblock title %}</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>{{ u.name }} ({{ u.country }})</h1>
+            <div class="container-fluid">
+                <ul>
+                    <li>Required GPA: {{ u.gpa }}</li>
+                    <li>Housing type: {{ "on-campus" if u.housing else "off-campus" }}</li>
+                    {% if u.max and u.min %}
+                    <li>Estimated cost of living: {{ u.min }} - {{ u.max }}Baht</li>
+                    {% elif u.max %}
+                    <li>Estimated cost of living: no more than {{ u.max }} Baht</li>
+                    {% elif u.min %}
+                    <li>Estimated cost of living: starting from {{ u.min }} Baht</li>
+                    {% else %}
+                    <li>Estimated cost of living: information unavailable</li>
+                    {% endif %}
+                    <li>Google Map <span><a href="{{ u.map or 'https://www.google.com/maps' }}">link</a></span></li>
+                    <li><span><a href="{{ u.incoming }}">Link</a></span> for incoming students</li>
+                    <li><span><a href="{{ u.course }}">Link</a></span> for open courses</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

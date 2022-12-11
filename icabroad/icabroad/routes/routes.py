@@ -4,8 +4,10 @@ from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .rutils import *
+from .rmodels import PartnerUniversity, QuestionAndAnswer
 
 mysql = MySQL(app)
+routes = Blueprint("routes", __name__)
 
 
 @app.route("/", methods=["GET"])
@@ -88,6 +90,20 @@ def continent(continent_name: str):
     return render_template("partners/continent.html", fcn=full_continent_name, partners=partners)
 
 
+@app.route("/partner/<int:uni_id>", methods=["GET"])
+def partner_by_id(uni_id: int):
+    with mysql.connect().cursor() as cur:
+        columns = "uni_name, c.name, required_gpa, housing_type, est_cost_max, est_cost_min, map_link, " \
+                  "incoming_stu_link, course_open_link "
+        query = f"select {columns} " \
+                f"from partner_university as p join country c on p.country_id = c.country_id " \
+                f"where p.uni_id = {uni_id}"
+        cur.execute(query)
+        res = cur.fetchone()
+        partner_uni = PartnerUniversity.generate(res)
+    return render_template("partners/partner.html", u=partner_uni)
+
+
 @app.route("/apply", methods=["GET"])
 def apply():
     return render_template("apply.html")
@@ -163,3 +179,19 @@ def crud_course(state):
             edit_ic_course(noneList)
 
     return redirect("/admin/course")
+
+
+@app.route("/buddy", methods=["GET"])
+def buddy():
+    return render_template("buddy.html")
+
+
+@app.route("/faq", methods=["GET"])
+def faq():
+    with mysql.connect().cursor() as cur:
+        query = f"select question, answer " \
+                f"from faq"
+        cur.execute(query)
+        raw_res = cur.fetchall()
+        qas = list(map(QuestionAndAnswer.generate_qa, raw_res))
+    return render_template("faq.html", qas=qas)
