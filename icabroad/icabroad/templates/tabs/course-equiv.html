@@ -29,20 +29,30 @@
 <body>
 {% extends "base.html" %}
 {% block content %}
-<form action="/course-equiv/search" method="get">
-    <div class="input-group">
-        <span class="input-group-text">Criteria</span>
-        <select class="form-select form_input" name="criteria">
-            <option selected>Select criteria</option>
-            {% for type in ["Country", "Major", "Host course name", "MUIC course name", "Host university name"] %}
-            <option value="{{ type.replace(' ', '') }}">{{ type }}</option>
-            {% endfor %}
-        </select>
-        <span class="input-group-text">Search term</span>
-        <input type="text" name="searchTerm" id="searchTerm" class="form-control">
-    </div>
-    <button type="submit">Search</button>
-</form>
+<div class="container-fluid">
+    <form action="/course-equiv/search" method="get">
+        <div class="row">
+            <div class="col-10">
+                <div class="input-group">
+                    <span class="input-group-text">Criteria</span>
+                    <select class="form-select form_input" name="criteria">
+                        <option selected>Select criteria</option>
+                        {% for type in
+                        ["Country", "Major", "Host course name", "MUIC course name", "Host university name"]
+                        %}
+                        <option value="{{ type.replace(' ', '') }}">{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="input-group-text">Search term</span>
+                    <input type="text" name="searchTerm" id="searchTerm" class="form-control">
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
 <div class="container-fluid">
     <table class="table" id="table">
         <thead>
@@ -64,6 +74,9 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
+<div class="container-fluid">
+    To submit your own course equivalency request, click <a href="{{ request_form }}">here</a>.
 </div>
 {% endblock %}
 </body>

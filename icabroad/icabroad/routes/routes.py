@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
+from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair, Link
 from .rutils import *
 
 mysql = MySQL(app)
@@ -200,6 +200,26 @@ def crud_course(state):
     return redirect("/admin/course")
 
 
+@app.route("/admin/links/", methods=["GET", "POST"])
+def links():
+    with mysql.connect().cursor() as cur:
+        if request.method == "GET":
+            query = f"select link_name, url " \
+                    f"from links;"
+            cur.execute(query)
+            raw_links = cur.fetchall()
+            all_links = list(map(Link.generate_link, raw_links))
+            return render_template("admin/crud_links.html", links=all_links)
+        new_url = request.form["url"]
+        link_name = request.form["name"]
+        query = f"update links " \
+                f"set url = '{new_url}' " \
+                f"where link_name = '{link_name}'"
+        cur.execute(query)
+        cur.connection.commit()
+        return redirect("/admin/links/")
+
+
 @app.route("/buddy", methods=["GET"])
 def buddy():
     with mysql.connect().cursor() as cur:
@@ -225,15 +245,22 @@ def faq():
 @app.route("/course-equiv", methods=["GET"])
 def course_equiv():
     with mysql.connect().cursor() as cur:
-        query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
-                f"from partner_course pc " \
-                f"join approved_course ac on pc.n_id = ac.n_id " \
-                f"join ic_course ic on ic.c_id = ac.c_id " \
-                f"join partner_university pu on pc.uni_id = pu.uni_id;"
-        cur.execute(query)
+        equiv_course_query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
+                             f"from partner_course pc " \
+                             f"join approved_course ac on pc.n_id = ac.n_id " \
+                             f"join ic_course ic on ic.c_id = ac.c_id " \
+                             f"join partner_university pu on pc.uni_id = pu.uni_id;"
+        cur.execute(equiv_course_query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("tabs/course-equiv.html", ecs=equal_courses)
+
+        link_query = f"select url " \
+                     f"from links " \
+                     f"where link_name = 'course_equiv'"
+        cur.execute(link_query)
+        raw_link = cur.fetchone()
+        request_form, = raw_link
+    return render_template("tabs/course-equiv.html", ecs=equal_courses, request_form=request_form)
 
 
 @app.route("/course-equiv/search", methods=["GET"])

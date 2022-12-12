@@ -38,6 +38,7 @@
                             <li><a class="dropdown-item" href="/admin/partner">University</a></li>
                             <li><a class="dropdown-item" href="/admin/course">University Course</a></li>
                             <li><a class="dropdown-item" href="/admin/linker">Course Equivalency</a></li>
+                            <li><a class="dropdown-item" href="/admin/links">Links</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -51,13 +52,13 @@
 <div>
     {% if zone == 'partner' %}
     {% include "admin/crud_partner.html" %}
-    {% endif %}
-    {% if zone == 'linker' %}
+    {% elif zone == 'linker' %}
     {% include "admin/crud_course_link.html" %}
-    {% endif %}
-    {% if zone == 'course' %}
+    {% elif zone == 'course' %}
     {% include "admin/crud_add_course.html" %}
     {% endif %}
+    {% block content %}
+    {% endblock %}
 </div>
 </body>
 </html>
