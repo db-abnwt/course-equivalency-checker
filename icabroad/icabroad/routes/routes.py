@@ -29,7 +29,7 @@ def home():
 
 @app.route("/aj-kanat", methods=["GET"])
 def aj_kanat():
-    return render_template("kanat.html")
+    return render_template("easter-egg.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -119,7 +119,7 @@ def partner_by_id(uni_id: int):
 
 @app.route("/apply", methods=["GET"])
 def apply():
-    return render_template("apply.html")
+    return render_template("tabs/apply.html")
 
 
 @app.route("/admin", methods=["GET"])
@@ -208,7 +208,7 @@ def buddy():
                 f"where link_name = 'buddy_register'"
         cur.execute(query)
         link, = cur.fetchone()
-    return render_template("buddy.html", buddy_registration_link=link)
+    return render_template("tabs/buddy.html", buddy_registration_link=link)
 
 
 @app.route("/faq", methods=["GET"])
@@ -219,7 +219,7 @@ def faq():
         cur.execute(query)
         raw_res = cur.fetchall()
         qas = list(map(QuestionAndAnswer.generate_qa, raw_res))
-    return render_template("faq.html", qas=qas)
+    return render_template("tabs/faq.html", qas=qas)
 
 
 @app.route("/course-equiv", methods=["GET"])
@@ -233,7 +233,7 @@ def course_equiv():
         cur.execute(query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("course-equiv.html", ecs=equal_courses)
+    return render_template("tabs/course-equiv.html", ecs=equal_courses)
 
 
 @app.route("/course-equiv/search", methods=["GET"])
@@ -244,4 +244,4 @@ def course_equiv_search():
         cur.execute(query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("course-equiv.html", ecs=equal_courses)
+    return render_template("tabs/course-equiv.html", ecs=equal_courses)
