@@ -1,5 +1,6 @@
+import pymysql
 from flask import Blueprint
-from flask import render_template, redirect, request
+from flask import render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
@@ -16,34 +17,47 @@ def root():
 
 @app.route("/home", methods=["GET"])
 def home():
-    return render_template("home.html", continents=get_all_continents())
+    all_continents = get_all_continents()
+    with mysql.connect().cursor() as cur:
+        query = f"select url " \
+                f"from links " \
+                f"where link_name = 'exchange_info'"
+        cur.execute(query)
+        info_sesh_link, = cur.fetchone()
+    return render_template("home.html", continents=all_continents, info_sesh_link=info_sesh_link)
 
 
 @app.route("/aj-kanat", methods=["GET"])
 def aj_kanat():
-    return render_template("kanat.html")
+    return render_template("easter-egg.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'GET':
-        return render_template("auth/login.html")
-    elif request.method == 'POST':
+    if request.method == 'POST':
         login_details = request.form
         username = login_details['username']
         password = login_details['password']
         with mysql.connect().cursor() as cur:
             try:
-                query = f"select stu_id,password from users where stu_id = {username}"
+                query = f"select username, password from users where username = '{username}'"
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
+                    session["logged_in"] = True
                     return render_template("auth/login.html", error="Success"), \
-                        {"Refresh": "3; url=/"}
+                        {"Refresh": "2; url=/admin"}
                 return render_template("auth/login.html", error="Wrong password")
-            except Any:
+            except pymysql.err.OperationalError:
                 return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
+
     return render_template("auth/login.html")
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.pop("logged_in", None)
+    return redirect("/home")
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -52,7 +66,7 @@ def register():
         return render_template('auth/register.html')
     if request.method == 'POST':
         register_details = request.form
-        username = int(register_details['username'])
+        username = register_details['username']
         password = register_details['password']
         c_password = register_details['confirm_password']
 
@@ -65,14 +79,14 @@ def register():
             try:
                 query = (
                     f"INSERT INTO "
-                    f"users(stu_id,password) "
-                    f"VALUES({username}, '{hashed_pw}')"
+                    f"users(username, password) "
+                    f"VALUES('{username}', '{hashed_pw}')"
                 )
                 cur.execute(query)
                 cur.connection.commit()
                 return render_template('auth/register.html', error='Register Successful, Redirecting to Login Page'), \
-                    {"Refresh": "3; url=/login"}
-            except Any:
+                    {"Refresh": "2; url=/login"}
+            except pymysql.err.OperationalError:
                 return render_template('auth/register.html', error='Kaboom')
     return render_template('auth/register.html')
 
@@ -105,15 +119,17 @@ def partner_by_id(uni_id: int):
 
 @app.route("/apply", methods=["GET"])
 def apply():
-    return render_template("apply.html")
+    return render_template("tabs/apply.html")
 
 
 @app.route("/admin", methods=["GET"])
+@login_required
 def admin():
     return render_template("admin/admin.html")
 
 
 @app.route("/admin/<zone>", methods=["GET", "POST"])
+@login_required
 def admin_zone(zone: str):
     countries = get_all_countries()
     if request.method == 'GET':
@@ -135,6 +151,7 @@ def admin_zone(zone: str):
 
 
 @app.route("/admin/partner/edit", methods=["POST"])
+@login_required
 def edit_partner():
     uni_details = list(request.form.values())
     index = uni_details[0]
@@ -144,12 +161,14 @@ def edit_partner():
 
 
 @app.route("/admin/partner/delete/<name>", methods=["GET"])
+@login_required
 def delete_partner(name: str):
     delete_partners(name)
     return redirect('/admin/partner')
 
 
 @app.route("/admin/linker/<state>", methods=["POST"])
+@login_required
 def course_link(state):
     link_details = tuple(request.form.values())
     if state == 'link':
@@ -160,6 +179,7 @@ def course_link(state):
 
 
 @app.route("/admin/course/<state>", methods=["POST"])
+@login_required
 def crud_course(state):
     course_details = tuple(request.form.values())
     none_list = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in course_details)
@@ -182,7 +202,13 @@ def crud_course(state):
 
 @app.route("/buddy", methods=["GET"])
 def buddy():
-    return render_template("buddy.html")
+    with mysql.connect().cursor() as cur:
+        query = f"select url " \
+                f"from links " \
+                f"where link_name = 'buddy_register'"
+        cur.execute(query)
+        link, = cur.fetchone()
+    return render_template("tabs/buddy.html", buddy_registration_link=link)
 
 
 @app.route("/faq", methods=["GET"])
@@ -193,7 +219,7 @@ def faq():
         cur.execute(query)
         raw_res = cur.fetchall()
         qas = list(map(QuestionAndAnswer.generate_qa, raw_res))
-    return render_template("faq.html", qas=qas)
+    return render_template("tabs/faq.html", qas=qas)
 
 
 @app.route("/course-equiv", methods=["GET"])
@@ -207,7 +233,7 @@ def course_equiv():
         cur.execute(query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("course-equiv.html", ecs=equal_courses)
+    return render_template("tabs/course-equiv.html", ecs=equal_courses)
 
 
 @app.route("/course-equiv/search", methods=["GET"])
@@ -218,4 +244,4 @@ def course_equiv_search():
         cur.execute(query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("course-equiv.html", ecs=equal_courses)
+    return render_template("tabs/course-equiv.html", ecs=equal_courses)

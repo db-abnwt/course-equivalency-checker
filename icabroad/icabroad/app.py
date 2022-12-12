@@ -1,4 +1,5 @@
 from flask import Flask
+from datetime import timedelta
 import yaml
 
 config = yaml.load(open("config.yaml", "r"), yaml.Loader)
@@ -7,6 +8,8 @@ config = yaml.load(open("config.yaml", "r"), yaml.Loader)
 def create_app():
     inner_config = yaml.load(open("config.yaml", "r"), yaml.Loader)
     flask = Flask(__name__, instance_relative_config=True)
+    flask.permanent_session_lifetime = timedelta(minutes=30)
+    flask.secret_key = inner_config["secret_key"]
 
     with flask.app_context():
         from icabroad.routes.routes import routes, mysql
