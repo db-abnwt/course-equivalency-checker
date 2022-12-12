@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import render_template, redirect, request
 from werkzeug.security import generate_password_hash, check_password_hash
+import pymysql
 
 from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
 from .rutils import *
@@ -34,14 +35,14 @@ def login():
         password = login_details['password']
         with mysql.connect().cursor() as cur:
             try:
-                query = f"select stu_id,password from users where stu_id = {username}"
+                query = f"select username, password from users where username = '{username}'"
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
                     return render_template("auth/login.html", error="Success"), \
                         {"Refresh": "3; url=/"}
                 return render_template("auth/login.html", error="Wrong password")
-            except Any:
+            except pymysql.err.OperationalError:
                 return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
     return render_template("auth/login.html")
 
@@ -52,7 +53,7 @@ def register():
         return render_template('auth/register.html')
     if request.method == 'POST':
         register_details = request.form
-        username = int(register_details['username'])
+        username = register_details['username']
         password = register_details['password']
         c_password = register_details['confirm_password']
 
@@ -65,14 +66,14 @@ def register():
             try:
                 query = (
                     f"INSERT INTO "
-                    f"users(stu_id,password) "
-                    f"VALUES({username}, '{hashed_pw}')"
+                    f"users(username, password) "
+                    f"VALUES('{username}', '{hashed_pw}')"
                 )
                 cur.execute(query)
                 cur.connection.commit()
                 return render_template('auth/register.html', error='Register Successful, Redirecting to Login Page'), \
                     {"Refresh": "3; url=/login"}
-            except Any:
+            except pymysql.err.OperationalError:
                 return render_template('auth/register.html', error='Kaboom')
     return render_template('auth/register.html')
 
