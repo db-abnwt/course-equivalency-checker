@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
+from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair, Link
 from .rutils import *
 
 mysql = MySQL(app)
@@ -198,6 +198,18 @@ def crud_course(state):
             edit_ic_course(none_list)
 
     return redirect("/admin/course")
+
+
+@app.route("/admin/links/", methods=["GET", "POST"])
+def links():
+    if request.method == "GET":
+        with mysql.connect().cursor() as cur:
+            query = f"select link_name, url " \
+                    f"from links;"
+            cur.execute(query)
+            raw_links = cur.fetchall()
+            all_links = list(map(Link.generate_link, raw_links))
+        return render_template("admin/crud_links.html", links=all_links)
 
 
 @app.route("/buddy", methods=["GET"])

@@ -65,3 +65,13 @@ class EqualCoursePair:
     @staticmethod
     def generate_pair(ce_tup):
         return EqualCoursePair(ce_tup)
+
+
+class Link:
+    def __init__(self, tup: tuple[str, str]):
+        self.db_name, self.url = tup
+        self.pretty_name = self.db_name.replace('_', ' ').title()
+
+    @staticmethod
+    def generate_link(tup):
+        return Link(tup)
