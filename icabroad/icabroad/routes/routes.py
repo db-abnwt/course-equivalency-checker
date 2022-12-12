@@ -17,7 +17,14 @@ def root():
 
 @app.route("/home", methods=["GET"])
 def home():
-    return render_template("home.html", continents=get_all_continents())
+    all_continents = get_all_continents()
+    with mysql.connect().cursor() as cur:
+        query = f"select url " \
+                f"from links " \
+                f"where link_name = 'exchange_info'"
+        cur.execute(query)
+        info_sesh_link, = cur.fetchone()
+    return render_template("home.html", continents=all_continents, info_sesh_link=info_sesh_link)
 
 
 @app.route("/aj-kanat", methods=["GET"])
