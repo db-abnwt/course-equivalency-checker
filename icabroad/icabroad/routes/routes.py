@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 
@@ -39,12 +39,19 @@ def login():
                 cur.execute(query)
                 result = cur.fetchall()
                 if check_password_hash(result[0][1], password):
+                    session["logged_in"] = True
                     return render_template("auth/login.html", error="Success"), \
                         {"Refresh": "3; url=/"}
                 return render_template("auth/login.html", error="Wrong password")
             except pymysql.err.OperationalError:
                 return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
     return render_template("auth/login.html")
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.pop("logged_in", None)
+    return redirect("/home")
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -110,11 +117,13 @@ def apply():
 
 
 @app.route("/admin", methods=["GET"])
+@login_required
 def admin():
     return render_template("admin/admin.html")
 
 
 @app.route("/admin/<zone>", methods=["GET", "POST"])
+@login_required
 def admin_zone(zone: str):
     countries = get_all_countries()
     if request.method == 'GET':
@@ -136,6 +145,7 @@ def admin_zone(zone: str):
 
 
 @app.route("/admin/partner/edit", methods=["POST"])
+@login_required
 def edit_partner():
     uni_details = list(request.form.values())
     index = uni_details[0]
@@ -145,12 +155,14 @@ def edit_partner():
 
 
 @app.route("/admin/partner/delete/<name>", methods=["GET"])
+@login_required
 def delete_partner(name: str):
     delete_partners(name)
     return redirect('/admin/partner')
 
 
 @app.route("/admin/linker/<state>", methods=["POST"])
+@login_required
 def course_link(state):
     link_details = tuple(request.form.values())
     if state == 'link':
@@ -161,6 +173,7 @@ def course_link(state):
 
 
 @app.route("/admin/course/<state>", methods=["POST"])
+@login_required
 def crud_course(state):
     course_details = tuple(request.form.values())
     none_list = tuple(int(i) if i.isdigit() else (i if i != "" else None) for i in course_details)

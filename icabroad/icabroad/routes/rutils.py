@@ -1,7 +1,9 @@
-from typing import Tuple, Any, Dict
+from typing import Any
+from functools import wraps
 
+from flask import current_app as app, session, redirect
 from flaskext.mysql import MySQL
-from flask import current_app as app
+
 from .rmodels import ContinentLink, PartnerLink
 
 mysql = MySQL(app)
@@ -216,3 +218,14 @@ def create_course_search_query(rq_params: dict[str, str]):
         case "hostuniversityname":
             base_query += f"where lower(pu.uni_name) like '%{search_term}%'"
     return base_query
+
+
+def login_required(func):
+    @wraps(func)
+    def check_login(*args, **kwargs):
+        if "logged_in" in session:
+            return func(*args, **kwargs)
+        else:
+            return redirect("/login")
+
+    return check_login
