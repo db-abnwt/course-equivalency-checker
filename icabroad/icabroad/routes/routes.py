@@ -202,14 +202,22 @@ def crud_course(state):
 
 @app.route("/admin/links/", methods=["GET", "POST"])
 def links():
-    if request.method == "GET":
-        with mysql.connect().cursor() as cur:
+    with mysql.connect().cursor() as cur:
+        if request.method == "GET":
             query = f"select link_name, url " \
                     f"from links;"
             cur.execute(query)
             raw_links = cur.fetchall()
             all_links = list(map(Link.generate_link, raw_links))
-        return render_template("admin/crud_links.html", links=all_links)
+            return render_template("admin/crud_links.html", links=all_links)
+        new_url = request.form["url"]
+        link_name = request.form["name"]
+        query = f"update links " \
+                f"set url = '{new_url}' " \
+                f"where link_name = '{link_name}'"
+        cur.execute(query)
+        cur.connection.commit()
+        return redirect("/admin/links/")
 
 
 @app.route("/buddy", methods=["GET"])

@@ -16,7 +16,9 @@
                 <div class="row">
                     <div class="col-10">
                         <label for="linkToEdit" class="form-label">{{ link.pretty_name }}</label>
-                        <input class="form-control" name="uni" id="linkToEdit" value="{{ link.url }}">
+                        <input class="form-control" name="url" id="linkToEdit" value="{{ link.url }}">
+                        <label hidden="hidden" for="hidden1" class="form-label">{{ link.pretty_name }}</label>
+                        <input type="hidden" name="name" id="hidden1" value="{{ link.db_name }}">
                     </div>
                     <div class="col-2 align-self-end">
                         <button type="submit" class="btn btn-primary">Update</button>
