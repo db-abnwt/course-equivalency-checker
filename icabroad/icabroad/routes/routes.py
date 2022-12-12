@@ -202,7 +202,13 @@ def crud_course(state):
 
 @app.route("/buddy", methods=["GET"])
 def buddy():
-    return render_template("buddy.html")
+    with mysql.connect().cursor() as cur:
+        query = f"select url " \
+                f"from links " \
+                f"where link_name = 'buddy_register'"
+        cur.execute(query)
+        link, = cur.fetchone()
+    return render_template("buddy.html", buddy_registration_link=link)
 
 
 @app.route("/faq", methods=["GET"])
