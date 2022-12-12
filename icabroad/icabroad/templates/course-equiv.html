@@ -35,10 +35,10 @@
         <select class="form-select form_input" name="criteria">
             <option selected>Select criteria</option>
             {% for type in ["Country", "Major", "Host course name", "MUIC course name", "Host university name"] %}
-            <option value={{ type }}>{{ type }}</option>
+            <option value="{{ type.replace(' ', '') }}">{{ type }}</option>
             {% endfor %}
         </select>
-        <span class="input-group-text">Search term</span>
+        <span class="input-group-text">Search term</spanear
         <input type="text" name="searchTerm" id="searchTerm" class="form-control">
     </div>
     <button type="submit">Search</button>
