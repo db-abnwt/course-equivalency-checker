@@ -201,19 +201,18 @@ def create_course_search_query(rq_params: dict[str, str]):
                  f"join approved_course ac on pc.n_id = ac.n_id " \
                  f"join ic_course ic on ic.c_id = ac.c_id " \
                  f"join partner_university pu on pc.uni_id = pu.uni_id "
-    extension = ""
     match criteria:
         case "country":
-            extension = f"join country c on pu.country_id = c.country_id " \
-                        f"where lower(c.name) = '{search_term}'"
+            base_query += f"join country c on pu.country_id = c.country_id " \
+                          f"where lower(c.name) = '{search_term}'"
         case "major":
-            extension = f"where lower(ic.major) = '%{search_term}%'"
-        case "host course name":
-            extension = f"where lower(pc.pn_name) = '{search_term}' " \
-                        f"or lower(pc.pn_cid) = '{search_term}'"
-        case "muic course name":
-            extension = f"where lower(ic.pn_name) = '{search_term}' " \
-                        f"or lower(ic.pn_cid) = '{search_term}'"
-        case "host university name":
-            extension = f"where lower(pu.uni_name) like '%{search_term}%'"
-    return base_query + extension
+            base_query += f"where lower(ic.major) = '%{search_term}%'"
+        case "hostcoursename":
+            base_query += f"where lower(pc.pn_name) = '{search_term}' " \
+                          f"or lower(pc.pn_cid) = '{search_term}'"
+        case "muiccoursename":
+            base_query += f"where lower(ic.ic_name) = '{search_term}' " \
+                          f"or lower(ic.ic_cid) = '{search_term}'"
+        case "hostuniversityname":
+            base_query += f"where lower(pu.uni_name) like '%{search_term}%'"
+    return base_query
