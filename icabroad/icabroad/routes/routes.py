@@ -245,15 +245,22 @@ def faq():
 @app.route("/course-equiv", methods=["GET"])
 def course_equiv():
     with mysql.connect().cursor() as cur:
-        query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
-                f"from partner_course pc " \
-                f"join approved_course ac on pc.n_id = ac.n_id " \
-                f"join ic_course ic on ic.c_id = ac.c_id " \
-                f"join partner_university pu on pc.uni_id = pu.uni_id;"
-        cur.execute(query)
+        equiv_course_query = f"select pu.uni_name, pc.pn_cid, pc.pn_name, ic.ic_cid, ic.ic_name " \
+                             f"from partner_course pc " \
+                             f"join approved_course ac on pc.n_id = ac.n_id " \
+                             f"join ic_course ic on ic.c_id = ac.c_id " \
+                             f"join partner_university pu on pc.uni_id = pu.uni_id;"
+        cur.execute(equiv_course_query)
         raw_pairings = cur.fetchall()
         equal_courses = map(EqualCoursePair.generate_pair, raw_pairings)
-    return render_template("tabs/course-equiv.html", ecs=equal_courses)
+
+        link_query = f"select url " \
+                     f"from links " \
+                     f"where link_name = 'course_equiv'"
+        cur.execute(link_query)
+        raw_link = cur.fetchone()
+        request_form, = raw_link
+    return render_template("tabs/course-equiv.html", ecs=equal_courses, request_form=request_form)
 
 
 @app.route("/course-equiv/search", methods=["GET"])
