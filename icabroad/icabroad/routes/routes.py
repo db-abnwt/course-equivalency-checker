@@ -1,7 +1,7 @@
-from flask import Blueprint
-from flask import render_template, redirect, request, session
-from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
+from flask import Blueprint
+from flask import render_template, request
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .rmodels import PartnerUniversity, QuestionAndAnswer, EqualCoursePair
 from .rutils import *
@@ -27,9 +27,7 @@ def aj_kanat():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'GET':
-        return render_template("auth/login.html")
-    elif request.method == 'POST':
+    if request.method == 'POST':
         login_details = request.form
         username = login_details['username']
         password = login_details['password']
@@ -41,10 +39,11 @@ def login():
                 if check_password_hash(result[0][1], password):
                     session["logged_in"] = True
                     return render_template("auth/login.html", error="Success"), \
-                        {"Refresh": "3; url=/"}
+                        {"Refresh": "2; url=/admin"}
                 return render_template("auth/login.html", error="Wrong password")
             except pymysql.err.OperationalError:
                 return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
+
     return render_template("auth/login.html")
 
 
@@ -79,7 +78,7 @@ def register():
                 cur.execute(query)
                 cur.connection.commit()
                 return render_template('auth/register.html', error='Register Successful, Redirecting to Login Page'), \
-                    {"Refresh": "3; url=/login"}
+                    {"Refresh": "2; url=/login"}
             except pymysql.err.OperationalError:
                 return render_template('auth/register.html', error='Kaboom')
     return render_template('auth/register.html')
