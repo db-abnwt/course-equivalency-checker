@@ -146,7 +146,7 @@ def unlink_courses(tup):
 def add_partner_course(tup):
     with mysql.connect().cursor() as cur:
         add_partner_query = "insert into partner_course(uni_id, pn_cid, major, credits, pn_name) values(%s, %s, %s, %s, %s)"
-        cur.execute(add_partner_query, tup)
+        cur.execute(add_partner_query, tup[:5])
         cur.connection.commit()
     return
 
