@@ -47,9 +47,9 @@ def login():
                     session["logged_in"] = True
                     return render_template("auth/login.html", error="Success"), \
                         {"Refresh": "2; url=/admin"}
-                return render_template("auth/login.html", error="Wrong password")
-            except pymysql.err.OperationalError:
-                return render_template("auth/login.html", error="Student_ID doesn't not exist [1]")
+                return render_template("auth/login.html", error="Wrong username or password")
+            except:
+                return render_template("auth/login.html", error="Wrong username or password")
 
     return render_template("auth/login.html")
 
