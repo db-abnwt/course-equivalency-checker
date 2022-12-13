@@ -132,4 +132,4 @@ You can check out the functional website there. However, the web app may be down
 after 2022 as the server this is running on is a personal server so it may be serving
 something else.
 
-The presentation on this web app can be found [here](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley).
+The presentation on this web app can be found [here](https://www.youtube.com/watch?v=o7Gvj74OtWI&ab_channel=NawatNgerncham).
